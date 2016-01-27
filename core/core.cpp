@@ -2,23 +2,29 @@
 #include "core.h"
 #include <iterator>
 #include <bumpcheck_extra/square.h>
+#include <boost/lexical_cast.hpp>
 #include <sstream>
 
 using boost::filesystem::path;
 using boost::filesystem::ifstream;
 using std::istreambuf_iterator;
+using std::string;
 using ::item::pos;
 using ::item::square;
 using boost::property_tree::ini_parser::read_ini;
+using boost::lexical_cast;
 namespace core{
-map_manager::map_manager(boost::filesystem::path ini_file)
+void ritem::ReShow(){
+	
+}
+map_manager::map_manager(path ini_file)
 {
 	read_ini(ini_file.string(), map_tree);
 }
 
-void map_manager::read_map(path file,std::vector<ritem> &items)
+void map_manager::read_map(int level,std::vector<ritem> &items)
 {
-	ifstream f(file);
+	ifstream f(path(map_tree.get<string>("map."+lexical_cast<string>(level))));
 	istreambuf_iterator<char> start(f),end;
 	int n;
 	int size=map_tree.get<int>("block.size");

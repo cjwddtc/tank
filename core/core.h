@@ -22,8 +22,9 @@ class ritem:public item::square{
 
 class map_manager{
 	boost::property_tree::ptree map_tree;
+	public:
 	map_manager(boost::filesystem::path inifile);
-	void read_map(boost::filesystem::path file,std::vector<ritem> &);
+	void read_map(int level,std::vector<ritem> &);
 };
 
 class engine{

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.2)
 project(tank)
 include_directories(${PROJECT_SOURCE_DIR})
-set(CMAKE_CXX_FLAGS "-std=c++11 -Wall ${CMAKE_CXX_FLAGS}")
+set (CMAKE_CXX_FLAGS "-std=c++11 -g -Wall ${CMAKE_CXX_FLAGS}")
 SET (CMAKE_C_FLAGS_DEBUG          "-g")
 SET (CMAKE_C_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
 SET (CMAKE_C_FLAGS_RELEASE        "-O4 -DNDEBUG")

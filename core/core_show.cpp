@@ -13,10 +13,12 @@ void show_manager::create_show(std::vector<ritem>&vec)
 	}
 	for(ritem &i:vec){
 		std::string b=lexical_cast<std::string>(i.type);
-		int x=map_tree.get<int>(b+".x");
-		int y=map_tree.get<int>(b+".y");
-		int id=map_tree.get<int>(b+".pid");
-		this->vec.push_back(new graphic::ritem_show(&map[id],x,y,&i));
+		if(map_tree.get<bool>(b+".showtype",false)){
+			int x=map_tree.get<int>(b+".showx");
+			int y=map_tree.get<int>(b+".showy");
+			int id=map_tree.get<int>(b+".pid");
+			this->vec.push_back(new graphic::ritem_show(&map[id],x,y,&i));
+		}else assert(0);
 	}
 }
 show_manager::show_manager(boost::filesystem::path ini_file)
