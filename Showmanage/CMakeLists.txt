@@ -1,0 +1,5 @@
+include_directories(${PROJECT_SOURCE_DIR}/bumpcheck)
+AUX_SOURCE_DIRECTORY(. SRCLIST)
+add_library(Showmanage ${SRCLIST})
+target_link_libraries(Showmanage SDL2 SDL2main SDL2_image)
+set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
