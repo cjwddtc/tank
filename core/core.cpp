@@ -3,6 +3,7 @@
 #include <iterator>
 #include <bumpcheck_extra/square.h>
 #include <boost/lexical_cast.hpp>
+#include <Showmanage/Showmanage.h>
 #include <sstream>
 
 using boost::filesystem::path;
@@ -31,7 +32,7 @@ void map_manager::read_map(int level,std::vector<ritem> &items)
 	int width=map_tree.get<int>("block.width");
 	int lenth=map_tree.get<int>("block.lenth");
 	int bsize=size<<1;
-	graphic::Showmanage::init_Showmanage(lenth*x,width*y);
+	graphic::Showmanage::init_Showmanage(lenth*size,width*size);
 	unsigned char state;
 	for(int i=0;i<width;i++){
 		for(int j=0;j<lenth;j++){
