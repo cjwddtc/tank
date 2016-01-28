@@ -1,4 +1,5 @@
 #include "Show.h"
+#include <time.h>
 namespace graphic{
     using logic::ritem;
 	ritem_show::ritem_show(Showmanagemap *map_,int x_,int y_,ritem *it):map(map_),x(x_),y(y_),item(it){	}
@@ -16,6 +17,10 @@ namespace graphic{
     twinkl_show::~twinkl_show(){
         delete a;
         delete b;
+    }
+    tank_show::tank_show(Showmanagemap *map_,int x_,int y_,logic::tank *it):map(map_),x(x_),y(y_),item(it){   }
+    void tank_show::re_show(){
+        (*map)[x+item->x][y+item->y].render(item->point.x,item->point.y);
     }
 }
 //graphic::ritem_show::ritem_show(Showmanagemap* map_, int x_, int y_, core::ritem* it):map(map_),x(x_),y(y_),item(it){	}

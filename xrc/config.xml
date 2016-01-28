@@ -14,6 +14,16 @@
 		<height>32</height>
 		<width>32</width>
 	</2>
+	<3>
+		graphics/player1.bmp
+		<height>28</height>
+		<width>28</width>
+	</3>
+	<4>
+		graphics/player2.bmp
+		<height>28</height>
+		<width>28</width>
+	</4>
 </picture>
 <map>
 	<1>map/level1.map</1>
@@ -47,6 +57,10 @@
 </3>
 <4>
 	<type>1</type>
+	<size>
+		<height>28</height>
+		<width>28</width>
+	</size>
 	<show>
 		<x>6</x>
 		<y>0</y>
@@ -64,6 +78,10 @@
 		3
 		<arround>1</arround>
 	</type>
+	<size>
+		<height>28</height>
+		<width>28</width>
+	</size>
 	<show>
 		<x>5</x>
 		<y>0</y>
@@ -76,3 +94,23 @@
 		</twinkle>
 	</show>
 </6>
+<item>
+	<player1>
+		<show>
+			<x>0</x>
+			<y>0</y>
+			<pid>3</pid>
+		</show>
+		<level>1</level>
+		<maxlevel>4</maxlevel>
+	</player1>
+	<player2>
+		<show>
+			<x>0</x>
+			<y>0</y>
+			<pid>4</pid>
+		</show>
+		<level>1</level>
+		<maxlevel>4</maxlevel>
+	</player2>
+</item>

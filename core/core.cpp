@@ -119,6 +119,17 @@ void engine::load_map(unsigned level){
         i.bind_show(sh);
         checker->add_static(&i);
 	}
+	{
+		ptree &b=p_tree.get_child("item.player1");
+		ptree &pos=b.get_child("item.pos");
+		tank *ta=new tank(item::pos(b.get<unsigned>("pos.x"),12*size,));
+		new tank_control(new tank())
+		for(auto c:b){
+			map[lexical_cast<int>(c.first)].load_from_file(	c.second.get<path>("").string(),
+																c.second.get<int>("width"),
+															c.second.get<int>("height"));
+		}
+	}
 }
 
 void engine::run(){
