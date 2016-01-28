@@ -11,7 +11,7 @@ std::vector<pos> square::get_range()
 	for(size_t i=0;i<width;i++){
 		b.y=point.y;
 		vec.push_back(b);
-		b.y=point.y+height;
+		b.y=point.y+(height-1);
 		vec.push_back(b);
 		b.x++;
 	}
@@ -19,7 +19,7 @@ std::vector<pos> square::get_range()
 		b.y--;
 		b.x=point.x;
 		vec.push_back(b);
-		b.x=point.x+width;
+		b.x=point.x+(width-1);
 		vec.push_back(b);
 	}
 	return vec;

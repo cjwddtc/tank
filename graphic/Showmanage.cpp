@@ -58,7 +58,7 @@ void Showmanage::free()
 void Showmanage::render( int x, int y )
 {
 	//Set rendering space and render to screen
-	SDL_Rect renderQuad = { y, x, sonlenth , sonwidth};
+	SDL_Rect renderQuad = { x, y, sonlenth , sonwidth};
 	SDL_Rect renderFrom = { width,lenth,sonwidth, sonlenth};
 	SDL_RenderCopy( gRenderer, mTexture, &renderFrom, &renderQuad );
 }

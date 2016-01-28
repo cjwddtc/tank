@@ -25,6 +25,7 @@ class tank_show:public show
 	logic::tank *item;
 	int x;
 	int y;
+public:
 	tank_show(Showmanagemap *map,int x,int y,logic::tank *it);
 	void re_show();
 };

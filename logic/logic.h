@@ -30,12 +30,14 @@ public:
 	tank(::item::pos p,int lenth,int width,int type);
 	virtual void move(boost::any);
 };
-class tank_control
+class tank_control:public control::square_control
 {
 	tank *item;
+public:
 	tank_control(tank *);
 	tank *get_target();
 	std::vector<boost::any> run();
+	unsigned bump(item::item *);
 	~tank_control();
 };
 }

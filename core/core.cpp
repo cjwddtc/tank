@@ -17,8 +17,11 @@ using ::item::pos;
 using ::item::square;
 using graphic::Showmanage;
 using graphic::show;
+using graphic::tank_show;
 using graphic::ritem_show;
 using graphic::twinkl_show;
+using logic::tank;
+using logic::tank_control;
 namespace core{
 
 engine::engine(boost::filesystem::path xml_file){
@@ -54,47 +57,47 @@ void engine::load_map(unsigned level){
 				state=*start++;
 				if(state&0x4)
 				{
-					ritems.push_back(logic::ritem(item::pos(i*size,j*size),hsize,hsize,n));
-					ritems.push_back(logic::ritem(item::pos(i*size+hsize,j*size),hsize,hsize,n));
-					ritems.push_back(logic::ritem(item::pos(i*size,j*size+hsize),hsize,hsize,n));
-					ritems.push_back(logic::ritem(item::pos(i*size+hsize,j*size+hsize),hsize,hsize,n));
+					ritems.push_back(logic::ritem(item::pos(j*size,i*size),hsize,hsize,n));
+					ritems.push_back(logic::ritem(item::pos(j*size,i*size+hsize),hsize,hsize,n));
+					ritems.push_back(logic::ritem(item::pos(j*size+hsize,i*size),hsize,hsize,n));
+					ritems.push_back(logic::ritem(item::pos(j*size+hsize,i*size+hsize),hsize,hsize,n));
 				}
 				else
 				{
 					if(state&0x1)
 					{
-						ritems.push_back(logic::ritem(item::pos(i*size+hsize,j*size+hsize),hsize,hsize,n));
+						ritems.push_back(logic::ritem(item::pos(j*size+hsize,i*size+hsize),hsize,hsize,n));
 					}
 					else
 					{
-						ritems.push_back(logic::ritem(item::pos(i*size,j*size),hsize,hsize,n));
+						ritems.push_back(logic::ritem(item::pos(j*size,i*size),hsize,hsize,n));
 					}
 					state++;
 					if(state&0x2)
 					{
-						ritems.push_back(logic::ritem(item::pos(i*size+hsize,j*size),hsize,hsize,n));
+						ritems.push_back(logic::ritem(item::pos(j*size,i*size+hsize),hsize,hsize,n));
 					}
 					else
 					{
-						ritems.push_back(logic::ritem(item::pos(i*size,j*size+hsize),hsize,hsize,n));
+						ritems.push_back(logic::ritem(item::pos(j*size+hsize,i*size),hsize,hsize,n));
 					}
 				}
 				break;
 				case 3:
                     a<<".arround";
                     type=p_tree.get<int>(a.str());
-                    ritems.push_back(logic::ritem(item::pos(i*size-hsize,j*size-hsize),hsize,hsize,type));
-                    ritems.push_back(logic::ritem(item::pos(i*size+hsize,j*size-hsize),hsize,hsize,type));
-                    ritems.push_back(logic::ritem(item::pos(i*size,j*size-hsize),hsize,hsize,type));
+                    ritems.push_back(logic::ritem(item::pos(j*size-hsize,i*size-hsize),hsize,hsize,type));
+                    ritems.push_back(logic::ritem(item::pos(j*size-hsize,i*size+hsize),hsize,hsize,type));
+                    ritems.push_back(logic::ritem(item::pos(j*size-hsize,i*size),hsize,hsize,type));
 
-                    ritems.push_back(logic::ritem(item::pos(i*size-hsize,j*size),hsize,hsize,type));
-                    ritems.push_back(logic::ritem(item::pos(i*size-hsize,j*size+hsize),hsize,hsize,type));
+                    ritems.push_back(logic::ritem(item::pos(j*size,i*size-hsize),hsize,hsize,type));
+                    ritems.push_back(logic::ritem(item::pos(j*size+hsize,i*size-hsize),hsize,hsize,type));
 
-                    ritems.push_back(logic::ritem(item::pos(i*size-hsize,j*size+size),hsize,hsize,type));
-                    ritems.push_back(logic::ritem(item::pos(i*size,j*size+size),hsize,hsize,type));
-                    ritems.push_back(logic::ritem(item::pos(i*size+hsize,j*size+size),hsize,hsize,type));
+                    ritems.push_back(logic::ritem(item::pos(j*size+size,i*size-hsize),hsize,hsize,type));
+                    ritems.push_back(logic::ritem(item::pos(j*size+size,i*size),hsize,hsize,type));
+                    ritems.push_back(logic::ritem(item::pos(j*size+size,i*size+hsize),hsize,hsize,type));
 				case 0:
-					ritems.push_back(logic::ritem(item::pos(i*size,j*size),size,size,n));
+					ritems.push_back(logic::ritem(item::pos(j*size,i*size),size,size,n));
 				break;
 				case 2:
 				break;
@@ -119,17 +122,19 @@ void engine::load_map(unsigned level){
         i.bind_show(sh);
         checker->add_static(&i);
 	}
+	printf("finish load\n");
 	{
 		ptree &b=p_tree.get_child("item.player1");
-		ptree &pos=b.get_child("item.pos");
-		tank *ta=new tank(item::pos(b.get<unsigned>("pos.x"),12*size,));
-		new tank_control(new tank())
-		for(auto c:b){
-			map[lexical_cast<int>(c.first)].load_from_file(	c.second.get<path>("").string(),
-																c.second.get<int>("width"),
-															c.second.get<int>("height"));
-		}
+		ptree &show=b.get_child("show");
+		printf("asd\n");
+		tank *ta=new tank(item::pos(b.get<double>("pos.x")*size,b.get<double>("pos.y")*size),size,size,b.get<int>("type"));
+		printf("qwe\n");
+		checker->add_control(new tank_control(ta));
+		printf("zxc\n");
+		ta->bind_show(new tank_show(&map[show.get<int>("pid")],show.get<unsigned>("x"),show.get<unsigned>("y"),ta));
+		printf("asd\n");
 	}
+	printf("finish load\n");
 }
 
 void engine::run(){

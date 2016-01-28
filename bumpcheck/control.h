@@ -44,7 +44,7 @@ public:
 	//revert the move command
 	virtual data revert(data cmd)=0;
 	//deal with the bump
-	virtual unsigned int bump(item::item *)=0;
+	virtual unsigned bump(item::item *)=0;
 	virtual ~control()=default;
 };
 }

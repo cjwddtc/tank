@@ -1,5 +1,5 @@
 <block>
-	<size>16</size>
+	<size>32</size>
 	<height>13</height>
 	<width>13</width>
 </block>
@@ -96,6 +96,11 @@
 </6>
 <item>
 	<player1>
+		<type>1</type>
+		<pos>
+			<x>4</x>
+			<y>12</y>
+		</pos>
 		<show>
 			<x>0</x>
 			<y>0</y>
@@ -105,6 +110,11 @@
 		<maxlevel>4</maxlevel>
 	</player1>
 	<player2>
+		<type>2</type>
+		<pos>
+			<x>7.5</x>
+			<y>12</y>
+		</pos>
 		<show>
 			<x>0</x>
 			<y>0</y>
