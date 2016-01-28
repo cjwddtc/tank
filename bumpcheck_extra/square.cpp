@@ -15,13 +15,6 @@ std::vector<pos> square::get_range()
 		vec.push_back(b);
 		b.x++;
 	}
-	for(size_t i=0;i<lenth;i++){
-		b.y=point.y;
-		vec.push_back(b);
-		b.y=point.y+width;
-		vec.push_back(b);
-		b.x++;
-	}
 	for(size_t i=0;i<width-2;i++){
 		b.y--;
 		b.x=point.x;
@@ -41,17 +34,24 @@ square::square(pos point_, unsigned int lenth_, unsigned int width_):point(point
 {
 }
 
+move_square::move_square()
+{
+    //assert(0);
+}
+
+move_square::move_square(pos point_,unsigned int lenth_,unsigned int width_):square(point_,lenth_,width_){}
 
 void move_square::move(data d)
 {
-	switch(boost::any_cast<unsigned int>(d)){
-		case 0:
+	switch(boost::any_cast<unsigned>(d)){
+	//switch(d){
+		case 1:
 		point.x++;
 		break;
-		case 1:
+		case 2:
 		point.x--;
 		break;
-		case 2:
+		case 0:
 		point.y++;
 		break;
 		case 3:
@@ -65,6 +65,6 @@ void move_square::move(data d)
 namespace control{
 data square_control::revert(data cmd)
 {
-	return boost::any_cast<unsigned>(cmd)^0xfffffffe;
+	return boost::any_cast<unsigned>(cmd)^0x3;
 }
 }

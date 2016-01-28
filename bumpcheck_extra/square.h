@@ -15,6 +15,9 @@ class square:virtual public item::item
 
 class move_square:virtual public square,virtual public move_item
 {
+    public:
+    move_square();
+    move_square(pos point_,unsigned int lenth_,unsigned int width_);
 	virtual void move(data d);
 };
 }

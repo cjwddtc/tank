@@ -1,0 +1,78 @@
+<block>
+	<size>16</size>
+	<lenth>13</lenth>
+	<width>13</width>
+</block>
+<picture>
+	<1>
+		graphics/tile.bmp
+		<lenth>16</lenth>
+		<width>16</width>
+	</1>
+	<2>
+		graphics/tile.bmp
+		<lenth>32</lenth>
+		<width>32</width>
+	</2>
+</picture>
+<map>
+	<1>map/level1.map</1>
+</map>
+<0>
+	<type>2</type>
+</0>
+<1>
+	<type>1</type>
+	<show>
+		<x>0</x>
+		<y>0</y>
+		<pid>1</pid>
+	</show>
+</1>
+<2>
+	<type>1</type>
+	<show>
+		<x>2</x>
+		<y>0</y>
+		<pid>1</pid>
+	</show>
+</1>
+<3>
+	<type>1</type>
+	<show>
+		<x>4</x>
+		<y>0</y>
+		<pid>1</pid>
+	</show>
+</3>
+<4>
+	<type>1</type>
+	<show>
+		<x>6</x>
+		<y>0</y>
+		<pid>1</pid>
+		<twinkle>
+			<x>8</x>
+			<y>0</y>
+			<freq>2</freq>
+			<pid>1</pid>
+		</twinkle>
+	</show>
+</4>
+<6>
+	<type>
+		3
+		<arround>1</arround>
+	</type>
+	<show>
+		<x>5</x>
+		<y>0</y>
+		<pid>2</pid>
+		<twinkle>
+			<x>6</x>
+			<y>0</y>
+			<pid>2</pid>
+			<freq>2</freq>
+		</twinkle>
+	</show>
+</6>

@@ -20,7 +20,7 @@ class item{
 	virtual ~item()=default;
 };
 
-class move_item:public item{
+class move_item:virtual public item{
 	public:
 	virtual void move(data da)=0;
 };

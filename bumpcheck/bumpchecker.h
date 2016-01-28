@@ -10,13 +10,28 @@ class two_array{
 	int x;
 	int y;
 	public:
-	two_array(int x,int y);
-	T**operator[](size_t n);
-	void clear();
-	~two_array();
+	two_array(int x, int y){
+        ptr=(T **)calloc(x*y,sizeof(T *));
+        this->x=x;
+        this->y=y;
+    }
+	T**operator[](size_t n){
+        return (T**)ptr+n*y;
+    }
+
+	void clear(){
+        memset(ptr,0,sizeof(T*)*x*y);
+	}
+	~two_array(){
+        free(ptr);
+        ptr=0;
+	}
 };
-	
+
 class bumpchecker{
+    public:
+    int x;
+    int y;
 	two_array<item::item> static_map;
 	two_array<item::move_item> map;
 	std::vector<control::control *> controls;

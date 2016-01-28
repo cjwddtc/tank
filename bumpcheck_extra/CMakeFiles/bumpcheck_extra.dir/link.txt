@@ -1,0 +1,2 @@
+E:\code_package\gcc\bin\ar.exe qc ..\lib\libbumpcheck_extra.a  CMakeFiles/bumpcheck_extra.dir/square.cpp.obj
+E:\code_package\gcc\bin\ranlib.exe ..\lib\libbumpcheck_extra.a

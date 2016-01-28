@@ -1,0 +1,42 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+E:/code/bumptest/bumpcheck_extra/square.cpp
+square.h
+E:/code/bumptest/bumpcheck_extra/square.h
+assert.h
+-
+
+E:/code/bumptest/bumpcheck_extra/square.h
+bumpcheck/bumpchecker.h
+-
+
+bumpcheck/bumpchecker.h
+iterator
+-
+boost/multi_array.hpp
+-
+control.h
+bumpcheck/control.h
+
+bumpcheck/control.h
+stddef.h
+-
+vector
+-
+item.h
+bumpcheck/item.h
+
+bumpcheck/item.h
+vector
+-
+stdarg.h
+-
+boost/any.hpp
+-
+

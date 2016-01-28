@@ -56,19 +56,19 @@ void Showmanage::free()
 void Showmanage::render( int x, int y )
 {
 	//Set rendering space and render to screen
-	SDL_Rect renderQuad = { x, y, sonwidth, sonlenth };
+	SDL_Rect renderQuad = { y, x, sonlenth , sonwidth};
 	SDL_Rect renderFrom = { width,lenth,sonwidth, sonlenth};
 	SDL_RenderCopy( gRenderer, mTexture, &renderFrom, &renderQuad );
 }
 
-Showmanage::Showmanage() { //Initialize 
-	mTexture = NULL; 
-		sonlenth=0;
-		sonwidth=0;
-		lenth=0;
-		width=0;
+Showmanage::Showmanage() { //Initialize
+	mTexture = NULL;
+    sonlenth=0;
+    sonwidth=0;
+    lenth=0;
+    width=0;
 }
-Showmanage::~Showmanage() { //Deallocate 
+Showmanage::~Showmanage() { //Deallocate
 	free();
 }
 void Showmanage::set_size(int x, int y)
@@ -78,7 +78,7 @@ void Showmanage::set_size(int x, int y)
 }
 bool Showmanage::init_Showmanage(int x,int y)
 {
-	
+
 	//Initialization flag
 	bool success = true;
 
@@ -115,7 +115,7 @@ bool Showmanage::init_Showmanage(int x,int y)
 			else
 			{
 				//Initialize renderer color
-				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+				SDL_SetRenderDrawColor( gRenderer, 0, 0, 0, 0xFF );
 
 				//Initialize PNG loading
 				int imgFlags = IMG_INIT_PNG;
@@ -132,7 +132,7 @@ bool Showmanage::init_Showmanage(int x,int y)
 }
 void Showmanage::clear_Showmanage()
 {
-	//Destroy window	
+	//Destroy window
 	SDL_DestroyRenderer( gRenderer );
 	SDL_DestroyWindow( gWindow );
 	gWindow = NULL;
@@ -143,30 +143,20 @@ void Showmanage::clear_Showmanage()
 	SDL_Quit();
 }
 
-void Showmanage::loop(){
-	SDL_Event ent;
-	while(1){
-		if(SDL_PollEvent(&ent)){
-			if(ent.type==SDL_QUIT){
-				break;
-			}
-		}
-	}
-}
-
 void Showmanage::update(){
 	SDL_RenderPresent( gRenderer );
+    SDL_RenderFillRect(gRenderer,NULL);
 }
 
 
 Showmanage &Showmanageline::operator[](int x){
-	width=x*sonwidth;
+	lenth=x*sonlenth;
 	return  *(Showmanage *)this;
 }
 
 
 Showmanageline &Showmanagemap::operator[](int y){
-	lenth=y*sonlenth;
+	width=y*sonwidth;
 	return  *(Showmanageline *)this;
 }
 }

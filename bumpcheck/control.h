@@ -5,11 +5,11 @@
 #include "item.h"
 namespace control{
 using item::data;
-	
+
 /*this class design of base tpye
  * class may no run right on this class
  */
- 
+
 /*
 class data{
 	char *ptr;

@@ -5,7 +5,6 @@
 #include <boost/filesystem.hpp>
 #include <boost/multi_array.hpp>
 #include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/ini_parser.hpp>
 #include <vector>
 namespace core{
 struct block{

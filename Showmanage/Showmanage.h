@@ -4,6 +4,7 @@
 #include <string>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <functional>
 namespace graphic{
 //Texture wrapper class
 class Showmanage
@@ -19,7 +20,6 @@ class Showmanage
 		static SDL_Window* gWindow;
 		static bool init_Showmanage(int x,int y);
 		static void clear_Showmanage();
-		static void loop();
 		static void update();
 		//set size of sonpicture
 		void set_size(int x,int y);

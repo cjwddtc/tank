@@ -1,0 +1,2 @@
+E:\code_package\gcc\bin\ar.exe qc ..\lib\libbumpcheck.a  CMakeFiles/bumpcheck.dir/bumpchecker.cpp.obj CMakeFiles/bumpcheck.dir/control.cpp.obj CMakeFiles/bumpcheck.dir/item.cpp.obj
+E:\code_package\gcc\bin\ranlib.exe ..\lib\libbumpcheck.a
