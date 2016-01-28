@@ -1,9 +1,11 @@
 #ifndef BUMPCHECKER_H
 #define BUMPCHECKER_H
-#include <iterator>
-#include <boost/multi_array.hpp>
 #include "control.h"
+#include <set>
 namespace bumpchecker{
+/**
+this class is just high performace two delims array for pointer
+**/
 template <class T>
 class two_array{
 	void *ptr;
@@ -27,18 +29,22 @@ class two_array{
         ptr=0;
 	}
 };
-
+//bumpchecher use run to bumpecher-move
 class bumpchecker{
     public:
-    int x;
-    int y;
+    unsigned x;
+    unsigned y;
 	two_array<item::item> static_map;
 	two_array<item::move_item> map;
-	std::vector<control::control *> controls;
-	bumpchecker(size_t width,size_t hight);
+	std::set<control::control *> controls;
+	bumpchecker(unsigned width,unsigned height);
 	void add_static(item::item *);
 	void remove_static(item::item *);
+	void add_control(control::control *control);
+	void remove_control(control::control *control);
 	void run();
+	void reset();
+	~bumpchecker();
 };
 }
 #endif

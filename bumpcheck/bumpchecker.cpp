@@ -5,10 +5,12 @@
 namespace bumpchecker{
 using std::unordered_map;
 using ::item::move_item;
+using ::item::pos;
+using ::item::item;
 using ::control::bump_type;
 using ::control::control;
 
-bumpchecker::bumpchecker(size_t x_,size_t y_):x(x_),y(y_),static_map(x,y),map(x,y){}
+bumpchecker::bumpchecker(unsigned x_,unsigned y_):x(x_),y(y_),static_map(x,y),map(x,y){}
 
 void bumpchecker::run()
 {
@@ -26,10 +28,9 @@ void bumpchecker::run()
 			//this data won't use so std::move
 			//move the item
 			ptr->move(a);
-			unordered_map<item::item *,std::pair<unsigned int,std::mutex>> cache;
+			unordered_map<item *,std::pair<unsigned int,std::mutex>> cache;
 			//get the range and cal
 			unsigned int res=0;
-//#pragma omp parallel for
 			for(auto &b:ptr->get_range()){
 			    if(b.x<0 || b.y<0 || b.x>=x || b.y>=y){
                     res|=bump_type::stop;
@@ -62,20 +63,38 @@ void bumpchecker::run()
 				break;
 			}
 		}
-		control_->get_target()->ReShow();
+		control_->get_target()->re_show();
 	}
 }
 
-void bumpchecker::add_static(item::item *ptr){
-	for(item::pos p:ptr->get_range()){
+void bumpchecker::add_static(item *ptr){
+	for(pos p:ptr->get_range()){
 		static_map[p.x][p.y]=ptr;
 	}
 }
-void bumpchecker::remove_static(item::item* ptr)
+
+void bumpchecker::remove_static(item* ptr)
 {
-	for(item::pos p:ptr->get_range()){
+	for(pos p:ptr->get_range()){
 		static_map[p.x][p.y]=0;
 	}
 }
 
+void bumpchecker::add_control(control *control){
+	controls.insert(control);
+}
+void bumpchecker::remove_control(control *control){
+	controls.erase(control);
+}
+
+void bumpchecker::reset(){
+	controls.clear();
+	static_map.clear();
+}
+
+bumpchecker::~bumpchecker(){
+	for(control *a:controls){
+		delete a;
+	}
+}
 }

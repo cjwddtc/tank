@@ -16,7 +16,7 @@ class item{
 	public:
 	//the function to get the range
 	virtual std::vector<pos> get_range()=0;
-	virtual void ReShow()=0;
+	virtual void re_show()=0;
 	virtual ~item()=default;
 };
 

@@ -6,10 +6,10 @@ class square:virtual public item::item
 {
 	public:
 	pos point;
-	unsigned int lenth;
+	unsigned int height;
 	unsigned int width;
 	square();
-	square(pos point_,unsigned int lenth_,unsigned int width_);
+	square(pos point_,unsigned int height_,unsigned int width_);
 	virtual std::vector<pos> get_range();
 };
 

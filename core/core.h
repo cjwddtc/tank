@@ -1,33 +1,26 @@
 #ifndef CORE_H
 #define CORE_H
-#include <bumpcheck/bumpchecker.h>
-#include <bumpcheck_extra/square.h>
 #include <boost/filesystem.hpp>
-#include <boost/multi_array.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <vector>
+#include <map>
+#include <logic/logic.h>
+#include <graphic/Showmanage.h>
 namespace core{
-struct block{
-	unsigned char shape;
-	unsigned char type;
-};
-
-class ritem:public item::square{
-	public:
-	int type;
-	ritem(::item::pos p,int lenth,int width,int type);
-	void ReShow();
-};
-
-class map_manager{
-	boost::property_tree::ptree map_tree;
-	public:
-	map_manager(boost::filesystem::path inifile);
-	void read_map(int level,std::vector<ritem> &);
-};
 
 class engine{
-	//map_manager
+public:
+	boost::property_tree::ptree p_tree;
+	unsigned width;
+	unsigned height;
+	unsigned size;
+	std::map<int,graphic::Showmanagemap> map;
+	std::vector<logic::ritem> ritems;
+	bumpchecker::bumpchecker *checker;
+public:
+	engine(boost::filesystem::path inifile);
+	void load_map(unsigned level);
+	void run();
 };
 }
 #endif

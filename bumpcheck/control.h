@@ -33,13 +33,17 @@ enum bump_type{
 };
 
 typedef std::vector<data> move_cmds;
+//class control is to control the move_item
 class control
 {
 public:
 	control()=default;
 	virtual item::move_item*get_target()=0;
+	//this function return the move command
 	virtual move_cmds run()=0;
+	//revert the move command
 	virtual data revert(data cmd)=0;
+	//deal with the bump
 	virtual unsigned int bump(item::item *)=0;
 	virtual ~control()=default;
 };

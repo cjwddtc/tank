@@ -1,17 +1,17 @@
 <block>
 	<size>16</size>
-	<lenth>13</lenth>
+	<height>13</height>
 	<width>13</width>
 </block>
 <picture>
 	<1>
 		graphics/tile.bmp
-		<lenth>16</lenth>
+		<height>16</height>
 		<width>16</width>
 	</1>
 	<2>
 		graphics/tile.bmp
-		<lenth>32</lenth>
+		<height>32</height>
 		<width>32</width>
 	</2>
 </picture>

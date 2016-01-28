@@ -7,19 +7,19 @@ std::vector<pos> square::get_range()
 {
 	pos b=point;
 	std::vector<pos> vec;
-	vec.reserve(((lenth+width)<<1)-4);
-	for(size_t i=0;i<lenth;i++){
+	vec.reserve(((height+width)<<1)-4);
+	for(size_t i=0;i<width;i++){
 		b.y=point.y;
 		vec.push_back(b);
-		b.y=point.y+width;
+		b.y=point.y+height;
 		vec.push_back(b);
 		b.x++;
 	}
-	for(size_t i=0;i<width-2;i++){
+	for(size_t i=0;i<height-2;i++){
 		b.y--;
 		b.x=point.x;
 		vec.push_back(b);
-		b.x=point.x+lenth;
+		b.x=point.x+width;
 		vec.push_back(b);
 	}
 	return vec;
@@ -30,7 +30,7 @@ square::square()
 	assert(0);
 }
 
-square::square(pos point_, unsigned int lenth_, unsigned int width_):point(point_),lenth(lenth_),width(width_)
+square::square(pos point_, unsigned int height_, unsigned int width_):point(point_),height(height_),width(width_)
 {
 }
 
@@ -39,7 +39,7 @@ move_square::move_square()
     //assert(0);
 }
 
-move_square::move_square(pos point_,unsigned int lenth_,unsigned int width_):square(point_,lenth_,width_){}
+move_square::move_square(pos point_,unsigned int height_,unsigned int width_):square(point_,height_,width_){}
 
 void move_square::move(data d)
 {
