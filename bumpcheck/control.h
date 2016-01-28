@@ -3,7 +3,8 @@
 #include <stddef.h>
 #include <vector>
 #include "item.h"
-namespace control{
+namespace control
+{
 using item::data;
 
 /*this class design of base tpye
@@ -26,10 +27,11 @@ class data{
 	~data();
 };*/
 
-enum bump_type{
-	stop=0x1,
-	pass=0x2,
-	cover=0x4
+enum bump_type
+{
+    stop=0x1,
+    pass=0x2,
+    cover=0x4
 };
 
 typedef std::vector<data> move_cmds;
@@ -37,15 +39,15 @@ typedef std::vector<data> move_cmds;
 class control
 {
 public:
-	control()=default;
-	virtual item::move_item*get_target()=0;
-	//this function return the move command
-	virtual move_cmds run()=0;
-	//revert the move command
-	virtual data revert(data cmd)=0;
-	//deal with the bump
-	virtual unsigned bump(item::item *)=0;
-	virtual ~control()=default;
+    control()=default;
+    virtual item::move_item*get_target()=0;
+    //this function return the move command
+    virtual move_cmds run()=0;
+    //revert the move command
+    virtual data revert(data cmd)=0;
+    //deal with the bump
+    virtual unsigned bump(item::item *)=0;
+    virtual ~control()=default;
 };
 }
 

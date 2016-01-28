@@ -1,7 +1,9 @@
 #include "control.h"
 #include <stdlib.h>
 #include <memory.h>
-namespace control{/*
+namespace control
+{
+/*
 template <typename T>
 void data::push_data(T a)
 {
