@@ -22,8 +22,8 @@ twinkl_show::~twinkl_show()
     delete a;
     delete b;
 }
-tank_show::tank_show(Showmanagemap *map_,int x_,int y_,logic::tank *it):map(map_),x(x_),y(y_),item(it) {   }
-void tank_show::re_show()
+move_ritem_show::move_ritem_show(Showmanagemap *map_,int x_,int y_,logic::move_ritem *it):map(map_),x(x_),y(y_),item(it) {   }
+void move_ritem_show::re_show()
 {
     (*map)[x+item->x][y+item->y].render(item->point.x,item->point.y);
 }

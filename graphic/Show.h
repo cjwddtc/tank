@@ -21,14 +21,14 @@ public:
     void re_show();
 };
 
-class tank_show:public show
+class move_ritem_show:public show
 {
     Showmanagemap *map;
-    logic::tank *item;
+    logic::move_ritem *item;
     int x;
     int y;
 public:
-    tank_show(Showmanagemap *map,int x,int y,logic::tank *it);
+    move_ritem_show(Showmanagemap *map,int x,int y,logic::move_ritem *it);
     void re_show();
 };
 

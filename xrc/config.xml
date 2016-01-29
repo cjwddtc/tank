@@ -24,6 +24,11 @@
 		<height>28</height>
 		<width>28</width>
 	</4>
+	<5>
+		graphics/bullet.bmp
+		<height>8</height>
+		<width>8</width>
+	</5>
 </picture>
 <map>
 	<1>map/level1.map</1>
@@ -98,16 +103,20 @@
 	<player1>
 		<type>1</type>
 		<pos>
-			<x>4</x>
+			<x>4.5</x>
 			<y>12</y>
 		</pos>
+		<size>
+			<width>28</width>
+			<height>28</height>
+		</size>
 		<show>
 			<x>0</x>
 			<y>0</y>
 			<pid>3</pid>
 		</show>
-		<level>1</level>
-		<maxlevel>4</maxlevel>
+		<x>0</x>
+		<y>0</y>
 	</player1>
 	<player2>
 		<type>2</type>
@@ -120,7 +129,41 @@
 			<y>0</y>
 			<pid>4</pid>
 		</show>
-		<level>1</level>
-		<maxlevel>4</maxlevel>
+		<x>0</x>
+		<y>0</y>
 	</player2>
+	<bullet>
+		<type>3</type>
+		<size>
+			<width>8</width>
+			<height>8</height>
+		</size>
+		<show>
+			<x>0</x>
+			<y>0</y>
+			<pid>5</pid>
+		</show>
+		<x>0</x>
+		<y>0</y>
+	</bullet>
 </item>
+<control>
+	<player1_control>
+		<item>play1</item>
+		<control_type>key</control_type>
+		<up>w</up>
+		<down>s</down>
+		<left>a</left>
+		<right>d</right>
+		<fire>bullet_control</fire>
+	</player1_control>
+	<player2_control>
+		<item>play2</item>
+		<control_type>key</control_type>
+		<up>w</up>
+		<down>s</down>
+		<left>a</left>
+		<right>d</right>
+		<fire>bullet_control</fire>
+	</player1_control>
+	<

@@ -17,10 +17,10 @@ using ::item::pos;
 using ::item::square;
 using graphic::Showmanage;
 using graphic::show;
-using graphic::tank_show;
+using graphic::move_ritem_show;
 using graphic::ritem_show;
 using graphic::twinkl_show;
-using logic::tank;
+using logic::move_ritem;
 using logic::tank_control;
 namespace core
 {
@@ -135,9 +135,9 @@ void engine::load_map(unsigned level)
     {
         ptree &b=p_tree.get_child("item.player1");
         ptree &show=b.get_child("show");
-        tank *ta=new tank(item::pos(b.get<double>("pos.x")*size,b.get<double>("pos.y")*size),size,size,b.get<int>("type"));
+        move_ritem *ta=new move_ritem(item::pos(b.get<double>("pos.x")*size,b.get<double>("pos.y")*size),size,size,b.get<int>("type"));
         checker->add_control(new tank_control(ta));
-        ta->bind_show(new tank_show(&map[show.get<int>("pid")],show.get<unsigned>("x"),show.get<unsigned>("y"),ta));
+        ta->bind_show(new move_ritem_show(&map[show.get<int>("pid")],show.get<unsigned>("x"),show.get<unsigned>("y"),ta));
     }
 }
 

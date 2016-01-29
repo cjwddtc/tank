@@ -23,21 +23,21 @@ public:
     ritem(::item::pos p,int lenth,int width,int type);
 };
 
-class tank:virtual public ::item::move_square,virtual public block
+class move_ritem:virtual public ::item::move_square,virtual public block
 {
 public:
     unsigned type;
-    unsigned x;//the level<<1 and the state 0,1
-    unsigned y;//the drt
-    tank(::item::pos p,int lenth,int width,int type);
+    unsigned x;//the x offset of x in the bmp
+    unsigned y;//the y offset of y in the bmp
+    move_ritem(::item::pos p,int lenth,int width,int type);
     virtual void move(boost::any);
 };
 class tank_control:public control::square_control
 {
-    tank *item;
+    move_ritem *item;
 public:
-    tank_control(tank *);
-    tank *get_target();
+    tank_control(move_ritem *);
+    move_ritem *get_target();
     std::vector<boost::any> run();
     unsigned bump(item::item *);
     ~tank_control();

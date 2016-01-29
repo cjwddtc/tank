@@ -24,15 +24,15 @@ block::~block()
 
 ritem::ritem(::item::pos p,int lenth,int width,int type_):square(p,lenth,width),type(type_) {}
 
-tank::tank(::item::pos p,int lenth,int width,int type_):square(p,lenth,width),type(type_),x(0),y(0) {}
+move_ritem::move_ritem(::item::pos p,int lenth,int width,int type_):square(p,lenth,width),type(type_),x(0),y(0) {}
 
-tank_control::tank_control(tank *block):item(block) {}
-void tank::move(boost::any cmd)
+tank_control::tank_control(move_ritem *block):item(block) {}
+void move_ritem::move(boost::any cmd)
 {
     move_square::move(cmd);
 }
 
-tank *tank_control::get_target()
+move_ritem *tank_control::get_target()
 {
     return item;
 }
