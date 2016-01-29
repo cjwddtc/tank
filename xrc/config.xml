@@ -165,5 +165,8 @@
 		<left>a</left>
 		<right>d</right>
 		<fire>bullet_control</fire>
-	</player1_control>
+	</player2_control>
+</control>
+<main>
 	<
+</main>

@@ -133,6 +133,16 @@ void engine::load_map(unsigned level)
         checker->add_static(&i);
     }
     {
+        for(auto &it:p_tree.get_child("main"))
+        {
+            move_ritem *ta;
+            switch(it.first)
+            {
+                case "point_out":
+
+            }
+        }
+        ptree &a-
         ptree &b=p_tree.get_child("item.player1");
         ptree &show=b.get_child("show");
         move_ritem *ta=new move_ritem(item::pos(b.get<double>("pos.x")*size,b.get<double>("pos.y")*size),size,size,b.get<int>("type"));

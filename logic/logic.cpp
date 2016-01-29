@@ -32,6 +32,23 @@ void move_ritem::move(boost::any cmd)
     move_square::move(cmd);
 }
 
+ritem_control::ritem_control(move_ritem *item):it(item){}
+
+move_ritem *ritem_control::get_target(){
+    return it;
+}
+
+direct_control::direct_control(move_ritem *item,unsigned drt_,unsigned speed_):ritem_control(item),drt(drt_),speed(speed_){}
+std::vector<boost::any> direct_control::run(){
+    std::vector<boost::any> a;
+    a.resize(speed,(unsigned)drt);
+}
+
+
+unsigned bump(item::item *){
+    return bump_type::stop;
+}
+
 move_ritem *tank_control::get_target()
 {
     return item;

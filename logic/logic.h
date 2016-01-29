@@ -32,6 +32,35 @@ public:
     move_ritem(::item::pos p,int lenth,int width,int type);
     virtual void move(boost::any);
 };
+
+class ritem_control:public control::square_control
+{
+    move_ritem *it;
+public:
+    ritem_control(move_ritem *it);
+    move_ritem *get_target();
+};
+
+class direct_control:public ritem_control
+{
+    unsigned drt;
+    unsigned speed;
+    public:
+    direct_control(move_ritem *item,unsigned drt,unsigned speed);
+    virtual std::vector<boost::any> run();
+    virtual unsigned bump(item::item *);
+};
+
+class fire_control:public ritem_control
+{
+    void fire();
+};
+
+class key_control:public fire_control
+{
+
+};
+
 class tank_control:public control::square_control
 {
     move_ritem *item;
@@ -39,7 +68,7 @@ public:
     tank_control(move_ritem *);
     move_ritem *get_target();
     std::vector<boost::any> run();
-    unsigned bump(item::item *);
+    virtual unsigned bump(item::item *);
     ~tank_control();
 };
 }
