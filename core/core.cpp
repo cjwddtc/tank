@@ -3,15 +3,16 @@
 #include <iterator>
 #include <sstream>
 #include <iostream>
+#include <fstream>
 #include <graphic/Showmanage.h>
 #include <graphic/show.h>
 #include "core.h"
 
 using boost::filesystem::path;
-using boost::filesystem::ifstream;
 using boost::lexical_cast;
 using boost::property_tree::ptree;
 using std::istreambuf_iterator;
+using std::ifstream;
 using std::string;
 using ::item::pos;
 using ::item::square;
@@ -47,7 +48,7 @@ void engine::init(boost::filesystem::path xml_file){
 void engine::load_map_imp(unsigned level)
 {
     checker->reset();
-    ifstream f(path(p_tree.get<string>("map."+lexical_cast<string>(level))));
+    ifstream f(path(p_tree.get<string>("map."+lexical_cast<string>(level))).string());
     istreambuf_iterator<char> start(f),end;
     unsigned hsize=size>>1;
     ritems.clear();
