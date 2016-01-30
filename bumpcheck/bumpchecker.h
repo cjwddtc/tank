@@ -35,6 +35,7 @@ public:
         ptr=0;
     }
 };
+
 //bumpchecher use run to bumpecher-move
 class bumpchecker
 {
@@ -42,7 +43,7 @@ public:
     unsigned x;
     unsigned y;
     two_array<item::item> static_map;
-    two_array<item::move_item> map;
+    two_array<control::control> map;
     std::set<control::control *> controls;
     bumpchecker(unsigned width,unsigned height);
     void add_static(item::item *);

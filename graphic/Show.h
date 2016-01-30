@@ -1,6 +1,6 @@
 #ifndef SHOW_H
 #define SHOW_H
-#include <logic/logic.h>
+#include <core/logic.h>
 #include "Showmanage.h"
 namespace graphic
 {
@@ -15,20 +15,20 @@ class ritem_show:public show
     Showmanagemap *map;
     int x;
     int y;
-    logic::ritem *item;
+    core::ritem *item;
 public:
-    ritem_show(Showmanagemap *map,int x,int y,logic::ritem *it);
+    ritem_show(Showmanagemap *map,int x,int y,core::ritem *it);
     void re_show();
 };
 
 class move_ritem_show:public show
 {
     Showmanagemap *map;
-    logic::move_ritem *item;
+    core::move_ritem *item;
     int x;
     int y;
 public:
-    move_ritem_show(Showmanagemap *map,int x,int y,logic::move_ritem *it);
+    move_ritem_show(Showmanagemap *map,int x,int y,core::move_ritem *it);
     void re_show();
 };
 

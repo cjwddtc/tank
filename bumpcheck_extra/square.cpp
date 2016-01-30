@@ -33,7 +33,8 @@ square::square()
     assert(0);
 }
 
-square::square(pos point_, unsigned int height_, unsigned int width_):point(point_),height(height_),width(width_)
+square::square(pos point_, unsigned int height_, unsigned int width_,bool is_mid):
+        point(point_-(is_mid?pos(height_/2,width_/2):pos(0,0))),height(height_),width(width_)
 {
 }
 
@@ -42,7 +43,7 @@ move_square::move_square()
     //assert(0);
 }
 
-move_square::move_square(pos point_,unsigned int height_,unsigned int width_):square(point_,height_,width_) {}
+move_square::move_square(pos point_,unsigned int height_,unsigned int width_,bool is_mid):square(point_,height_,width_,is_mid) {}
 
 void move_square::move(data d)
 {

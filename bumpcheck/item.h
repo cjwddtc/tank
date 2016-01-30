@@ -10,7 +10,8 @@ struct pos
 {
     unsigned int x;
     unsigned int y;
-    pos(size_t x_,size_t y_);
+    pos(unsigned x_,unsigned y_);
+    pos operator-(pos a);
     pos()=default;
 };
 

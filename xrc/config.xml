@@ -101,7 +101,6 @@
 </6>
 <item>
 	<player1>
-		<type>1</type>
 		<pos>
 			<x>4.5</x>
 			<y>12</y>
@@ -119,7 +118,10 @@
 		<y>0</y>
 	</player1>
 	<player2>
-		<type>2</type>
+		<size>
+			<width>28</width>
+			<height>28</height>
+		</size>
 		<pos>
 			<x>7.5</x>
 			<y>12</y>
@@ -149,24 +151,44 @@
 </item>
 <control>
 	<player1_control>
-		<item>play1</item>
-		<control_type>key</control_type>
-		<up>w</up>
-		<down>s</down>
-		<left>a</left>
-		<right>d</right>
+		<bump>
+			1
+			<static>
+				<1>1</1>
+				<2>1</2>
+			</static>
+		</bump>
+		<type>key_control</type>
+		<id>1</id>
+		<speed>4</speed>
+		<item>player1</item>
+		<pos>
+			<x>4.5</x>
+			<y>12</y>
+		</pos>
+		<key>
+			<up>119</up>
+			<down>115</down>
+			<left>97</left>
+			<right>100</right>
+			<fire>117</fire>
+		</key>
 		<fire>bullet_control</fire>
 	</player1_control>
-	<player2_control>
-		<item>play2</item>
-		<control_type>key</control_type>
-		<up>w</up>
-		<down>s</down>
-		<left>a</left>
-		<right>d</right>
-		<fire>bullet_control</fire>
-	</player2_control>
+	<bullet_control>
+		<bump>
+			9
+			<static>
+				<1>25</1>
+				<2>9</2>
+			</static>
+		</bump>
+		<id>1025</id>
+		<speed>16</speed>
+		<type>direct_control</type>
+		<item>bullet</item>
+	</bullet_control>
 </control>
-<main>
-	<
-</main>
+<load>
+	<player1_control/>
+</load>

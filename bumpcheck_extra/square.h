@@ -10,7 +10,7 @@ public:
     unsigned int height;
     unsigned int width;
     square();
-    square(pos point_,unsigned int height_,unsigned int width_);
+    square(pos point_,unsigned int height_,unsigned int width_,bool is_mid);
     virtual std::vector<pos> get_range();
 };
 
@@ -18,7 +18,7 @@ class move_square:virtual public square,virtual public move_item
 {
 public:
     move_square();
-    move_square(pos point_,unsigned int lenth_,unsigned int width_);
+    move_square(pos point_,unsigned int lenth_,unsigned int width_,bool is_mid);
     virtual void move(data d);
 };
 }

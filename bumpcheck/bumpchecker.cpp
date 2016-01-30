@@ -1,9 +1,8 @@
 #include "bumpchecker.h"
-#include <unordered_map>
+#include <map>
 #include <omp.h>
 #include <mutex>
 namespace bumpchecker{
-using std::unordered_map;
 using ::item::move_item;
 using ::item::pos;
 using ::item::item;
@@ -17,7 +16,7 @@ void bumpchecker::run()
 	map.clear();
     for(control *control_:controls){
         for(auto &b:control_->get_target()->get_range()){
-            map[b.x][b.y]=control_->get_target();
+            map[b.x][b.y]=control_;
         }
     }
 	//遍历所有命令
@@ -28,35 +27,36 @@ void bumpchecker::run()
 			//this data won't use so std::move
 			//move the item
             ptr->move(a);
-            unordered_map<item *,std::pair<unsigned int,std::mutex>> cache;
+            std::map<item *,std::pair<unsigned int,std::mutex> > cache_item;
+            std::map<control *,std::pair<unsigned int,std::mutex> > cache_control;
 			//get the range and cal
 			unsigned int res=0;
 			for(auto &b:ptr->get_range()){
 			    if(b.x<0 || b.y<0 || b.x>=x || b.y>=y){
                     res|=bump_type::stop;
-                    control_->bump(0);
+                    control_->bump((item *)0);
 			    }else {
                     if(map[b.x][b.y]==0){
-                        map[b.x][b.y]=ptr;
-                    }else if(map[b.x][b.y]!=ptr){
-                        cache[map[b.x][b.y]].second.lock();
-                        unsigned int &c=cache[map[b.x][b.y]].first;
+                        map[b.x][b.y]=control_;
+                    }else if(map[b.x][b.y]!=control_){
+                        cache_control[map[b.x][b.y]].second.lock();
+                        unsigned int &c=cache_control[map[b.x][b.y]].first;
                         if(c==0){
                             c=control_->bump(map[b.x][b.y]);
                         }
-                        cache[map[b.x][b.y]].second.unlock();
+                        cache_control[map[b.x][b.y]].second.unlock();
                         if(c|bump_type::cover){
-                            map[b.x][b.y]=ptr;
+                            map[b.x][b.y]=control_;
                         }
                         res|=c;
                     }
                     if(static_map[b.x][b.y]!=0){
-                        cache[map[b.x][b.y]].second.lock();
-                        unsigned int &c=cache[static_map[b.x][b.y]].first;
+                        cache_item[static_map[b.x][b.y]].second.lock();
+                        unsigned int &c=cache_item[static_map[b.x][b.y]].first;
                         if(c==0){
                             c=control_->bump(static_map[b.x][b.y]);
                         }
-                        cache[map[b.x][b.y]].second.unlock();
+                        cache_item[static_map[b.x][b.y]].second.unlock();
                         res|=c;
                     }
 			    }
