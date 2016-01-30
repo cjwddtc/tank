@@ -5,7 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <graphic/Showmanage.h>
-#include <graphic/show.h>
+#include <graphic/Show.h>
 #include "core.h"
 
 using boost::filesystem::path;
