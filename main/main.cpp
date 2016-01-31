@@ -7,14 +7,12 @@
 using boost::filesystem::path;
 using namespace graphic;
 using namespace std::chrono_literals;
+/*
 int WinMain ()
 {
     main(0, 0);
-}/*
-int WinMain(int argc,char *argv[]){
-    main(argc,argv);
 }*/
-int SDL_main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     core::engine::init(path("config.xml"));
     //a.checker=new bumpchecker::bumpchecker(a.width,a.height);
