@@ -9,7 +9,7 @@
 namespace core
 {
 
-class block:virtual public ::item::square
+class block:virtual public bumpchecker::square
 {
 	graphic::show *shower;
 public:
@@ -23,15 +23,15 @@ class ritem:virtual public block
 {
 public:
 	unsigned type;
-	ritem(::item::pos p,unsigned lenth,unsigned width,int type,bool is_mide=false);
+	ritem(bumpchecker::pos p,unsigned lenth,unsigned width,int type,bool is_mide=false);
 };
 
-class move_ritem:virtual public ::item::move_square,virtual public block
+class move_ritem:virtual public bumpchecker::move_square,virtual public block
 {
 public:
 	unsigned x;//the x offset of x in the bmp
 	unsigned y;//the y offset of y in the bmp
-	move_ritem(::item::pos p,unsigned lenth,unsigned width,bool is_mid=false);
+	move_ritem(bumpchecker::pos p,unsigned lenth,unsigned width,bool is_mid=false);
 	virtual void move(boost::any);
 };
 
@@ -45,7 +45,7 @@ enum bump_result {
     des_dec=0x20,
 };
 
-class ritem_control:public control::square_control
+class ritem_control:public bumpchecker::square_control
 {
 protected:
 	unsigned type;
@@ -59,8 +59,8 @@ public:
 	virtual unsigned get_level() const ;
 	ritem_control(move_ritem *it,unsigned speed,int type);
 	move_ritem *get_target();
-	virtual unsigned bump(item::item *);
-	virtual unsigned bump(::control::control *);
+	virtual unsigned bump(bumpchecker::item *);
+	virtual unsigned bump(bumpchecker::control *);
 	virtual ~ritem_control();
 };
 

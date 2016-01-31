@@ -1,9 +1,9 @@
 #ifndef SQUARE_H
 #define SQUARE_H
 #include <bumpcheck/bumpchecker.h>
-namespace item
+namespace bumpchecker
 {
-class square:virtual public item::item
+class square:virtual public item
 {
 public:
 	pos point;
@@ -21,10 +21,7 @@ public:
 	move_square(pos point_,unsigned int lenth_,unsigned int width_,bool is_mid);
 	virtual void move(data d);
 };
-}
 
-namespace control
-{
 class square_control:public control
 {
 	virtual data revert(data cmd);

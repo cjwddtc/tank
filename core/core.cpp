@@ -15,13 +15,8 @@ using std::istreambuf_iterator;
 using std::ifstream;
 using std::string;
 using std::vector;
-using ::item::pos;
-using ::item::square;
-using graphic::Showmanage;
-using graphic::show;
-using graphic::move_ritem_show;
-using graphic::ritem_show;
-using graphic::twinkl_show;
+using namespace graphic;
+using namespace bumpchecker;
 namespace core
 {
 
@@ -65,39 +60,39 @@ void engine::load_map_imp(unsigned level)
 			case 1:
 				state=*start++;
 				if(state&0x4) {
-					ritems.insert(new ritem(item::pos(j*size,i*size),hsize,hsize,n));
-					ritems.insert(new ritem(item::pos(j*size,i*size+hsize),hsize,hsize,n));
-					ritems.insert(new ritem(item::pos(j*size+hsize,i*size),hsize,hsize,n));
-					ritems.insert(new ritem(item::pos(j*size+hsize,i*size+hsize),hsize,hsize,n));
+					ritems.insert(new ritem(pos(j*size,i*size),hsize,hsize,n));
+					ritems.insert(new ritem(pos(j*size,i*size+hsize),hsize,hsize,n));
+					ritems.insert(new ritem(pos(j*size+hsize,i*size),hsize,hsize,n));
+					ritems.insert(new ritem(pos(j*size+hsize,i*size+hsize),hsize,hsize,n));
 				} else {
 					if(state&0x1) {
-						ritems.insert(new ritem(item::pos(j*size+hsize,i*size+hsize),hsize,hsize,n));
+						ritems.insert(new ritem(pos(j*size+hsize,i*size+hsize),hsize,hsize,n));
 					} else {
-						ritems.insert(new ritem(item::pos(j*size,i*size),hsize,hsize,n));
+						ritems.insert(new ritem(pos(j*size,i*size),hsize,hsize,n));
 					}
 					state++;
 					if(state&0x2) {
-						ritems.insert(new ritem(item::pos(j*size,i*size+hsize),hsize,hsize,n));
+						ritems.insert(new ritem(pos(j*size,i*size+hsize),hsize,hsize,n));
 					} else {
-						ritems.insert(new ritem(item::pos(j*size+hsize,i*size),hsize,hsize,n));
+						ritems.insert(new ritem(pos(j*size+hsize,i*size),hsize,hsize,n));
 					}
 				}
 				break;
 			case 3:
 				a<<".arround";
 				type=p_tree.get<int>(a.str());
-				ritems.insert(new ritem(item::pos(j*size-hsize,i*size-hsize),hsize,hsize,type));
-				ritems.insert(new ritem(item::pos(j*size-hsize,i*size+hsize),hsize,hsize,type));
-				ritems.insert(new ritem(item::pos(j*size-hsize,i*size),hsize,hsize,type));
+				ritems.insert(new ritem(pos(j*size-hsize,i*size-hsize),hsize,hsize,type));
+				ritems.insert(new ritem(pos(j*size-hsize,i*size+hsize),hsize,hsize,type));
+				ritems.insert(new ritem(pos(j*size-hsize,i*size),hsize,hsize,type));
 
-				ritems.insert(new ritem(item::pos(j*size,i*size-hsize),hsize,hsize,type));
-				ritems.insert(new ritem(item::pos(j*size+hsize,i*size-hsize),hsize,hsize,type));
+				ritems.insert(new ritem(pos(j*size,i*size-hsize),hsize,hsize,type));
+				ritems.insert(new ritem(pos(j*size+hsize,i*size-hsize),hsize,hsize,type));
 
-				ritems.insert(new ritem(item::pos(j*size+size,i*size-hsize),hsize,hsize,type));
-				ritems.insert(new ritem(item::pos(j*size+size,i*size),hsize,hsize,type));
-				ritems.insert(new ritem(item::pos(j*size+size,i*size+hsize),hsize,hsize,type));
+				ritems.insert(new ritem(pos(j*size+size,i*size-hsize),hsize,hsize,type));
+				ritems.insert(new ritem(pos(j*size+size,i*size),hsize,hsize,type));
+				ritems.insert(new ritem(pos(j*size+size,i*size+hsize),hsize,hsize,type));
 			case 0:
-				ritems.insert(new ritem(item::pos(j*size,i*size),size,size,n));
+				ritems.insert(new ritem(pos(j*size,i*size),size,size,n));
 				break;
 			case 2:
 				break;
@@ -163,14 +158,14 @@ ritem_control *engine::create_control_imp(std::string control_type,va_list vl)
 	ptree &item_t=p_tree.get_child("item."+b.get<string>("item"));
 	move_ritem *it;
 	if(b.get<string>("type")=="direct_control") {
-		it=new move_ritem(item::pos(va_arg(vl,item::pos)),
+		it=new move_ritem(pos(va_arg(vl,pos)),
 		                  item_t.get<unsigned>("size.width"),
 		                  item_t.get<unsigned>("size.height"),
 		                  true);
 		unsigned drt=va_arg(vl,unsigned);
 		con=new direct_control(it,b.get<unsigned>("speed"),b.get<unsigned>("id"),drt);
 	} else if(b.get<string>("type")=="key_control") {
-		it=new move_ritem(item::pos(item_t.get<double>("pos.x")*size,
+		it=new move_ritem(pos(item_t.get<double>("pos.x")*size,
 		                            item_t.get<double>("pos.y")*size),
 		                  item_t.get<unsigned>("size.width"),
 		                  item_t.get<unsigned>("size.height"));

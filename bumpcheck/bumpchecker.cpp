@@ -6,11 +6,6 @@
 #include <mutex>
 namespace bumpchecker
 {
-using ::item::move_item;
-using ::item::pos;
-using ::item::item;
-using ::control::bump_type;
-using ::control::control;
 using std::equal_to;
 using std::find_if;
 
@@ -91,17 +86,17 @@ void bumpchecker::remove_static(item* ptr)
 	}
 }
 
-void bumpchecker::add_control(control *control)
+void bumpchecker::add_control(control *contro)
 {
-	controls.insert(control);
+	controls.insert(contro);
 }
 void bumpchecker::remove_control(control *contro)
 {
 	controls.erase(find_if(controls.lower_bound(contro),controls.end(),bind2nd(equal_to<control* >(),contro)));
 }
 
-size_t bumpchecker::count_control(control::control *control){
-	auto a=controls.equal_range(control);
+size_t bumpchecker::count_control(control *contro){
+	auto a=controls.equal_range(contro);
 	return std::distance(a.first,a.second);
 }
 void bumpchecker::reset()

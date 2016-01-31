@@ -1,7 +1,7 @@
 #include "square.h"
 #include <assert.h>
 
-namespace item
+namespace bumpchecker
 {
 
 std::vector<pos> square::get_range()
@@ -63,9 +63,6 @@ void move_square::move(data d)
 		assert(0);
 	}
 }
-}
-namespace control
-{
 data square_control::revert(data cmd)
 {
 	return boost::any_cast<unsigned>(cmd)^0x2;

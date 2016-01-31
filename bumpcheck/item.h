@@ -3,7 +3,7 @@
 #include <vector>
 #include <stdarg.h>
 #include <boost/any.hpp>
-namespace item
+namespace bumpchecker
 {
 typedef boost::any data;
 struct pos {

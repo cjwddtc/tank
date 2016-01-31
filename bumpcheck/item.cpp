@@ -1,5 +1,5 @@
 #include "item.h"
-namespace item
+namespace bumpchecker
 {
 pos pos::operator-(pos a)
 {

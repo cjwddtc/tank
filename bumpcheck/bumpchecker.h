@@ -38,15 +38,15 @@ class bumpchecker
 public:
 	unsigned x;
 	unsigned y;
-	two_array<item::item> static_map;
-	two_array<control::control> map;
-	std::multiset<control::control *> controls;
+	two_array<item> static_map;
+	two_array<control> map;
+	std::multiset<control *> controls;
 	bumpchecker(unsigned width,unsigned height);
-	void add_static(item::item *);
-	void remove_static(item::item *);
-	void add_control(control::control *control);
-	void remove_control(control::control *control);
-	size_t count_control(control::control *control);
+	void add_static(item *);
+	void remove_static(item *);
+	void add_control(control *control);
+	void remove_control(control *control);
+	size_t count_control(control *control);
 	void run();
 	void reset();
 	~bumpchecker();

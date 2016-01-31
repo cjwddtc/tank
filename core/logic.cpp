@@ -9,15 +9,17 @@ using namespace std::chrono;
 using namespace std::this_thread;
 namespace core
 {
-using item::square;
-using namespace control;
+using namespace bumpchecker;
+using namespace graphic;
+using namespace std;
+using boost::any;
 block::block():shower(0) {}
 void block::re_show()
 {
 	shower->re_show();
 }
 
-void block::bind_show(graphic::show *show_)
+void block::bind_show(show *show_)
 {
 	if(shower) delete shower;
 	shower=show_;
@@ -27,11 +29,11 @@ block::~block()
 	if(shower) delete shower;
 }
 
-ritem::ritem(::item::pos p,unsigned lenth,unsigned width,int type_,bool is_mid):square(p,lenth,width,is_mid),type(type_) {}
+ritem::ritem(pos p,unsigned lenth,unsigned width,int type_,bool is_mid):square(p,lenth,width,is_mid),type(type_) {}
 
-move_ritem::move_ritem(::item::pos p,unsigned lenth,unsigned width,bool is_mid):square(p,lenth,width,is_mid),x(0),y(0) {}
+move_ritem::move_ritem(pos p,unsigned lenth,unsigned width,bool is_mid):square(p,lenth,width,is_mid),x(0),y(0) {}
 
-void move_ritem::move(boost::any cmd)
+void move_ritem::move(any cmd)
 {
 	move_square::move(cmd);
 }
@@ -53,7 +55,7 @@ move_ritem *ritem_control::get_target()
 	return it;
 }
 
-unsigned ritem_control::bump(item::item *a)
+unsigned ritem_control::bump(item *a)
 {
 	unsigned n;
 	if(a==0) {
@@ -74,7 +76,7 @@ unsigned ritem_control::get_level() const
 	return type;
 }
 
-unsigned ritem_control::bump(::control::control *a)
+unsigned ritem_control::bump(control *a)
 {
 	ritem_control *c=dynamic_cast<ritem_control *>(a);
 	move_ritem *b=c->get_target();
@@ -116,9 +118,9 @@ void fire_control::fire()
 {
 	if(system_clock::now()<firetime) return ;
 	firetime = system_clock::now()+200ms;
-	item::pos point((it->y&1?(it->y&2?0:it->width):it->width/2)+it->point.x,
+	pos point((it->y&1?(it->y&2?0:it->width):it->width/2)+it->point.x,
 		                (it->y&1?it->height/2:(it->y&2?it->height:0))+it->point.y);
-	core::engine::create_control(firename[it->x>>1],point,it->y);
+	engine::create_control(firename[it->x>>1],point,it->y);
 }
 
 key_control::key_control(move_ritem* it, unsigned speed,
