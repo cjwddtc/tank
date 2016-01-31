@@ -7,7 +7,6 @@
 using boost::filesystem::path;
 using namespace graphic;
 using namespace std::chrono_literals;
-
 #undef main
 
 int main(int argc, char *argv[])
