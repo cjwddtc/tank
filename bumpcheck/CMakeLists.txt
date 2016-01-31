@@ -1,2 +1,2 @@
 AUX_SOURCE_DIRECTORY(. SRCLIST)
-add_library(bumpcheck SHARED ${SRCLIST})
+add_library(bumpcheck ${SRCLIST})

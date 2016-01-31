@@ -1,5 +1,5 @@
 include_directories(${PROJECT_SOURCE_DIR}/bumpcheck)
 AUX_SOURCE_DIRECTORY(. SRCLIST)
-add_library(graphic SHARED ${SRCLIST})
+add_library(graphic ${SRCLIST})
 target_link_libraries(graphic)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
