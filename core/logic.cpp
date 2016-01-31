@@ -108,7 +108,7 @@ std::vector<boost::any> direct_control::run()
 }
 
 
-fire_control::fire_control(move_ritem* it,unsigned speed,int type,std::string str):
+fire_control::fire_control(move_ritem* it,unsigned speed,int type,std::vector<std::string> str):
 	ritem_control(it,speed,type),firename(str),
 	firetime(system_clock::now()) {}
 
@@ -118,11 +118,11 @@ void fire_control::fire()
 	firetime = system_clock::now()+200ms;
 	item::pos point((it->y&1?(it->y&2?0:it->width):it->width/2)+it->point.x,
 		                (it->y&1?it->height/2:(it->y&2?it->height:0))+it->point.y);
-	core::engine::create_control(firename,point,it->y);
+	core::engine::create_control(firename[it->x>>1],point,it->y);
 }
 
 key_control::key_control(move_ritem* it, unsigned speed,
-                         int type,std::string firename, int codes [5]):
+                         int type,std::vector<std::string> firename, int codes [5]):
 	fire_control(it,speed,type,firename)
 {
 	memcpy(key_codes,codes,sizeof(int)*5);

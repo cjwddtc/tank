@@ -14,6 +14,7 @@ using boost::property_tree::ptree;
 using std::istreambuf_iterator;
 using std::ifstream;
 using std::string;
+using std::vector;
 using ::item::pos;
 using ::item::square;
 using graphic::Showmanage;
@@ -179,7 +180,14 @@ ritem_control *engine::create_control_imp(std::string control_type,va_list vl)
 		a[2]=b.get<unsigned>("key.down");
 		a[3]=b.get<unsigned>("key.left");
 		a[4]=b.get<unsigned>("key.fire");
-		con=new key_control(it,b.get<unsigned>("speed"),b.get<unsigned>("id"),b.get<string>("fire"),a);
+		vector<string> fires;
+		unsigned n=b.get<unsigned>("maxlevel");
+		fires.reserve(n);
+		ptree &fire=b.get_child("fire");
+		for(unsigned i=0;i<n;i++){
+			fires.push_back(fire.get<string>(lexical_cast<string>(i)));
+		}
+		con=new key_control(it,b.get<unsigned>("speed"),b.get<unsigned>("id"),fires,a);
 	} else {
 		assert(0);
 	}

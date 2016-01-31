@@ -74,10 +74,10 @@ public:
 
 class fire_control:public ritem_control
 {
-	std::string firename;
+	std::vector<std::string> firename;
 	std::chrono::time_point<std::chrono::system_clock> firetime;
 public:
-	fire_control(move_ritem *it,unsigned speed,int type,std::string filename);
+	fire_control(move_ritem *it,unsigned speed,int type,std::vector<std::string> filename);
 	void fire();
 };
 
@@ -85,13 +85,13 @@ class key_control:public fire_control
 {
 	int key_codes[5];
 public:
-	key_control(move_ritem *it,unsigned speed,int type,std::string firename,int codes[5]);
+	key_control(move_ritem *it,unsigned speed,int type,std::vector<std::string> firename,int codes[5]);
 	std::vector<boost::any> run();
 };
 /*
 class auto_control:public fire_control
 {
-
+	
 };*/
 
 }

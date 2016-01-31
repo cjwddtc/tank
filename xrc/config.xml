@@ -173,7 +173,13 @@
 			<right>100</right>
 			<fire>117</fire>
 		</key>
-		<fire>bullet_control</fire>
+		<fire>
+			<0>bullet_control</0>
+			<1>bullet_control</1>
+			<2>bullet_control</2>
+			<3>bullet_control</3>
+		</fire>
+		<maxlevel>4</maxlevel>
 	</player1_control>
 	<bullet_control>
 		<bump>
