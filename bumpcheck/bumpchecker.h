@@ -46,6 +46,7 @@ public:
 	void remove_static(item::item *);
 	void add_control(control::control *control);
 	void remove_control(control::control *control);
+	size_t count_control(control::control *control);
 	void run();
 	void reset();
 	~bumpchecker();

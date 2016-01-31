@@ -37,3 +37,7 @@ data::~data()
 }
 */
 }
+//do nothing 
+void control::control::bump_drt(boost::any cmd)
+{
+}

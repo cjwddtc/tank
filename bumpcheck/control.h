@@ -45,6 +45,8 @@ public:
 	virtual move_cmds run()=0;
 	//revert the move command
 	virtual data revert(data cmd)=0;
+	//this function is to tell the control the cmd to bump
+	virtual void bump_drt(boost::any cmd);
 	//deal with the bump
 	virtual unsigned bump(item::item *)=0;
 	virtual unsigned bump(::control::control *)=0;

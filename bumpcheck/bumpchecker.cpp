@@ -1,5 +1,7 @@
 #include "bumpchecker.h"
 #include <map>
+#include <algorithm>
+#include <functional>
 #include <omp.h>
 #include <mutex>
 namespace bumpchecker
@@ -9,6 +11,8 @@ using ::item::pos;
 using ::item::item;
 using ::control::bump_type;
 using ::control::control;
+using std::equal_to;
+using std::find_if;
 
 bumpchecker::bumpchecker(unsigned x_,unsigned y_):x(x_),y(y_),static_map(x,y),map(x,y) {}
 
@@ -24,7 +28,7 @@ void bumpchecker::run()
 	for(control *control_:controls) {
 		move_item *ptr=control_->get_target();
 		//遍历移动命令
-		for(auto &&a:control_->run()) {
+		for(auto &a:control_->run()) {
 			//this data won't use so std::move
 			//move the item
 			ptr->move(a);
@@ -44,6 +48,7 @@ void bumpchecker::run()
 						unsigned int &c=cache_control[map[b.x][b.y]].first;
 						if(c==0) {
 							c=control_->bump(map[b.x][b.y]);
+							control_->bump_drt(a);
 						}
 						cache_control[map[b.x][b.y]].second.unlock();
 						if(c|bump_type::cover) {
@@ -56,6 +61,7 @@ void bumpchecker::run()
 						unsigned int &c=cache_item[static_map[b.x][b.y]].first;
 						if(c==0) {
 							c=control_->bump(static_map[b.x][b.y]);
+							control_->bump_drt(a);
 						}
 						cache_item[static_map[b.x][b.y]].second.unlock();
 						res|=c;
@@ -89,11 +95,15 @@ void bumpchecker::add_control(control *control)
 {
 	controls.insert(control);
 }
-void bumpchecker::remove_control(control *control)
+void bumpchecker::remove_control(control *contro)
 {
-	controls.erase(control);
+	controls.erase(find_if(controls.lower_bound(contro),controls.end(),bind2nd(equal_to<control* >(),contro)));
 }
 
+size_t bumpchecker::count_control(control::control *control){
+	auto a=controls.equal_range(control);
+	return std::distance(a.first,a.second);
+}
 void bumpchecker::reset()
 {
 	controls.clear();
