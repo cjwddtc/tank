@@ -24,6 +24,7 @@ public:
 
 class square_control:public control
 {
+public:
 	virtual data revert(data cmd);
 };
 }

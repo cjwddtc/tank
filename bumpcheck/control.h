@@ -7,9 +7,9 @@ namespace bumpchecker
 {
 
 enum bump_type {
+	pass=0x0,
     stop=0x1,
-    pass=0x2,
-    cover=0x4,
+    cover=0x2,
 };
 
 typedef std::vector<data> move_cmds;

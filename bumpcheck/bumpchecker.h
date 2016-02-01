@@ -33,7 +33,7 @@ public:
 };
 
 //bumpchecher use run to bumpecher-move
-class bumpchecker
+class bumpcheck
 {
 public:
 	unsigned x;
@@ -41,7 +41,7 @@ public:
 	two_array<item> static_map;
 	two_array<control> map;
 	std::multiset<control *> controls;
-	bumpchecker(unsigned width,unsigned height);
+	bumpcheck(unsigned width,unsigned height);
 	void add_static(item *);
 	void remove_static(item *);
 	void add_control(control *control);
@@ -49,7 +49,7 @@ public:
 	size_t count_control(control *control);
 	void run();
 	void reset();
-	~bumpchecker();
+	~bumpcheck();
 };
 }
 #endif

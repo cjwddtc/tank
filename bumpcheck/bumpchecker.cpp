@@ -8,14 +8,50 @@ namespace bumpchecker
 {
 using std::equal_to;
 using std::find_if;
+using std::map;
+using boost::any;
+using std::pair;
+using std::make_pair;
 
-bumpchecker::bumpchecker(unsigned x_,unsigned y_):x(x_),y(y_),static_map(x,y),map(x,y) {}
+typedef pair<control *,void *> cpair;
+typedef map<cpair,unsigned> cache_map;
 
-void bumpchecker::run()
+class cache
 {
+	cache_map c_m_;
+	public:
+	template <class T>
+	inline unsigned get(control *a,T *b,any drt){
+		const cpair &p=make_pair(a,(void *)b);
+		auto it=c_m_.find(p);
+		if(it!=c_m_.end()){
+			return it->second;
+		}else{
+			printf("12%p\n",a);
+			unsigned n=a->bump(b);
+			a->bump_drt(drt);
+			c_m_.insert(make_pair(p,n));
+			return n;
+		}
+	}
+	
+	inline void set_pass(control *a,void *b){
+		const cpair &p=make_pair(a,b);
+		if(c_m_.find(p)==c_m_.end()){
+			c_m_.insert(make_pair(p,pass));
+		}
+	}
+};
+
+bumpcheck::bumpcheck(unsigned x_,unsigned y_):x(x_),y(y_),static_map(x,y),map(x,y) {}
+
+void bumpcheck::run()
+{
+	cache cache_;
 	map.clear();
 	for(control *control_:controls) {
 		for(auto &b:control_->get_target()->get_range()) {
+			if(map[b.x][b.y]) cache_.set_pass(control_,map[b.x][b.y]);
 			map[b.x][b.y]=control_;
 		}
 	}
@@ -27,39 +63,23 @@ void bumpchecker::run()
 			//this data won't use so std::move
 			//move the item
 			ptr->move(a);
-			std::map<item *,std::pair<unsigned int,std::mutex> > cache_item;
-			std::map<control *,std::pair<unsigned int,std::mutex> > cache_control;
 			//get the range and cal
 			unsigned int res=0;
 			for(auto &b:ptr->get_range()) {
-				if(b.x<0 || b.y<0 || b.x>=x || b.y>=y) {
-					res|=bump_type::stop;
-					control_->bump((item *)0);
+				if(b.x>=x || b.y>=y) {
+					res|=cache_.get(control_,(item*)0,a);
 				} else {
 					if(map[b.x][b.y]==0) {
 						map[b.x][b.y]=control_;
 					} else if(map[b.x][b.y]!=control_) {
-						cache_control[map[b.x][b.y]].second.lock();
-						unsigned int &c=cache_control[map[b.x][b.y]].first;
-						if(c==0) {
-							c=control_->bump(map[b.x][b.y]);
-							control_->bump_drt(a);
-						}
-						cache_control[map[b.x][b.y]].second.unlock();
+						unsigned c=cache_.get(control_,map[b.x][b.y],a);
 						if(c|bump_type::cover) {
 							map[b.x][b.y]=control_;
 						}
 						res|=c;
 					}
 					if(static_map[b.x][b.y]!=0) {
-						cache_item[static_map[b.x][b.y]].second.lock();
-						unsigned int &c=cache_item[static_map[b.x][b.y]].first;
-						if(c==0) {
-							c=control_->bump(static_map[b.x][b.y]);
-							control_->bump_drt(a);
-						}
-						cache_item[static_map[b.x][b.y]].second.unlock();
-						res|=c;
+						res|=cache_.get(control_,static_map[b.x][b.y],a);
 					}
 				}
 			}
@@ -72,40 +92,41 @@ void bumpchecker::run()
 	}
 }
 
-void bumpchecker::add_static(item *ptr)
+void bumpcheck::add_static(item *ptr)
 {
 	for(pos p:ptr->get_range()) {
 		static_map[p.x][p.y]=ptr;
 	}
 }
 
-void bumpchecker::remove_static(item* ptr)
+void bumpcheck::remove_static(item* ptr)
 {
 	for(pos p:ptr->get_range()) {
 		static_map[p.x][p.y]=0;
 	}
 }
 
-void bumpchecker::add_control(control *contro)
+void bumpcheck::add_control(control *contro)
 {
 	controls.insert(contro);
 }
-void bumpchecker::remove_control(control *contro)
+void bumpcheck::remove_control(control *contro)
 {
 	controls.erase(find_if(controls.lower_bound(contro),controls.end(),bind2nd(equal_to<control* >(),contro)));
 }
 
-size_t bumpchecker::count_control(control *contro){
+size_t bumpcheck::count_control(control *contro)
+{
 	auto a=controls.equal_range(contro);
 	return std::distance(a.first,a.second);
 }
-void bumpchecker::reset()
+void bumpcheck::reset()
 {
 	controls.clear();
 	static_map.clear();
 }
 
-bumpchecker::~bumpchecker()
+bumpcheck::~bumpcheck()
 {
 	for(control *a:controls) {
 		delete a;

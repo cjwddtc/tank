@@ -1,9 +1,11 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iterator>
+#include <array>
 #include <sstream>
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 #include <graphic/Showmanage.h>
 #include <graphic/Show.h>
 #include "core.h"
@@ -15,6 +17,8 @@ using std::istreambuf_iterator;
 using std::ifstream;
 using std::string;
 using std::vector;
+using std::swap;
+using std::array;
 using namespace graphic;
 using namespace bumpchecker;
 namespace core
@@ -27,7 +31,7 @@ engine::engine(boost::filesystem::path xml_file)
 	width=p_tree.get<int>("block.width");
 	height=p_tree.get<int>("block.height");
 	Showmanage::init_Showmanage(height*size,width*size);
-	this->checker=new bumpchecker::bumpchecker(width*size,height*size);
+	this->checker=new bumpcheck(width*size,height*size);
 	ptree &b=p_tree.get_child("picture");
 	for(auto c:b) {
 		map[lexical_cast<int>(c.first)].load_from_file(	c.second.get<path>("").string(),
@@ -44,7 +48,18 @@ void engine::init(boost::filesystem::path xml_file)
 void engine::load_map_imp(unsigned level)
 {
 	checker->reset();
-	ifstream f(path(p_tree.get<string>("map."+lexical_cast<string>(level))).string());
+	ptree &map_t=p_tree.get_child("map."+lexical_cast<string>(level));
+	for(auto &b:map_t){
+		enemy_names.insert(enemy_names.end(),b.second.get<unsigned>(""),b.first);
+	}
+	std::string rpath=map_t.get<string>("");
+	rpath.erase(remove_if(rpath.begin(),rpath.end(),[](char a){
+		if(a=='\t') return true;
+		else if(a=='\n') return true;
+		else if(a==' ') return true;
+		else return false;}),rpath.end());
+	ifstream f(path(rpath).string());
+	std::cout << rpath << std::endl;
 	istreambuf_iterator<char> start(f),end;
 	unsigned hsize=size>>1;
 	ritems.clear();
@@ -119,8 +134,20 @@ void engine::load_map_imp(unsigned level)
 	}
 	ptree &b=p_tree.get_child("load");
 	for(auto c:b) {
-		create_control(c.first);
+		for(int i=0;i<c.second.get("",1);i++)
+			create_control(c.first);
 	}
+}
+
+std::string engine::rand_get_name_imp(){
+	if(enemy_names.size()==0){
+		return std::string();
+	}
+	swap(enemy_names[rand()%enemy_names.size()],enemy_names.back());
+	std::string p=enemy_names.back();
+	enemy_names.pop_back();
+	printf("test\n");
+	return p;
 }
 
 void engine::load_map(unsigned level)
@@ -155,39 +182,56 @@ ritem_control *engine::create_control_imp(std::string control_type,va_list vl)
 {
 	ptree &b=p_tree.get_child("control."+control_type);
 	ritem_control *con;
-	ptree &item_t=p_tree.get_child("item."+b.get<string>("item"));
-	move_ritem *it;
-	if(b.get<string>("type")=="direct_control") {
-		it=new move_ritem(pos(va_arg(vl,pos)),
-		                  item_t.get<unsigned>("size.width"),
-		                  item_t.get<unsigned>("size.height"),
-		                  true);
-		unsigned drt=va_arg(vl,unsigned);
-		con=new direct_control(it,b.get<unsigned>("speed"),b.get<unsigned>("id"),drt);
-	} else if(b.get<string>("type")=="key_control") {
-		it=new move_ritem(pos(item_t.get<double>("pos.x")*size,
-		                            item_t.get<double>("pos.y")*size),
-		                  item_t.get<unsigned>("size.width"),
-		                  item_t.get<unsigned>("size.height"));
-		int a[5];
-		a[0]=b.get<unsigned>("key.up");
-		a[1]=b.get<unsigned>("key.right");
-		a[2]=b.get<unsigned>("key.down");
-		a[3]=b.get<unsigned>("key.left");
-		a[4]=b.get<unsigned>("key.fire");
+	pos po;
+	bool flag;
+	std::string str=b.get("type",control_type);
+	if(str=="auto_control"){
+		ptree &born=b.get_child("born");
+		std::array<bumpchecker::pos,3> ar;
+		ar[0].x=born.get<unsigned>("1.x")*size;
+		ar[0].y=born.get<unsigned>("1.y")*size;
+		ar[1].x=born.get<unsigned>("2.x")*size;
+		ar[1].y=born.get<unsigned>("2.y")*size;
+		ar[2].x=born.get<unsigned>("3.x")*size;
+		ar[2].y=born.get<unsigned>("3.y")*size;
+		ptree &fire=b.get_child("fire");
 		vector<string> fires;
 		unsigned n=b.get<unsigned>("maxlevel");
-		fires.reserve(n);
-		ptree &fire=b.get_child("fire");
-		for(unsigned i=0;i<n;i++){
+		for(unsigned i=0; i<n; i++) {
 			fires.push_back(fire.get<string>(lexical_cast<string>(i)));
 		}
-		con=new key_control(it,b.get<unsigned>("speed"),b.get<unsigned>("id"),fires,a);
-	} else {
-		assert(0);
+		con=(new auto_control())->init_auto(std::move(ar))->init_fire(std::move(fires))->
+		init_r_c(0,b.get<unsigned>("speed"),b.get<unsigned>("id"));
+		con->destroy();
+	}else{
+		if(str=="direct_control") {
+			po=pos(va_arg(vl,pos));
+			flag=true;
+			unsigned drt=va_arg(vl,unsigned);
+			con=(new direct_control())->init_drt(drt);;
+		} else if(str=="key_control") {
+			flag=false;
+			po=pos(b.get<double>("pos.x")*size,b.get<double>("pos.y")*size);
+			std::array<int,5> a;
+			a[0]=b.get<unsigned>("key.up");
+			a[1]=b.get<unsigned>("key.right");
+			a[2]=b.get<unsigned>("key.down");
+			a[3]=b.get<unsigned>("key.left");
+			a[4]=b.get<unsigned>("key.fire");
+			vector<string> fires;
+			unsigned n=b.get<unsigned>("maxlevel");
+			fires.reserve(n);
+			ptree &fire=b.get_child("fire");
+			for(unsigned i=0; i<n; i++) {
+				fires.push_back(fire.get<string>(lexical_cast<string>(i)));
+			}
+			con=(new key_control())->init_key(std::move(a))->init_fire(std::move(fires));
+		}else {
+			assert(0);
+		}
+		move_ritem *it=create_mritem_imp(b.get<string>("item"),po,flag);
+		con->init_r_c(it,b.get<unsigned>("speed"),b.get<unsigned>("id"));
 	}
-	ptree &show=item_t.get_child("show");
-	it->bind_show(new move_ritem_show(&map[show.get<int>("pid")],show.get<int>("x"),show.get<int>("y"),it));
 	try {
 		for(auto c:b.get_child("bump.static")) {
 			con->add_bump_deal(lexical_cast<int>(c.first),
@@ -203,6 +247,21 @@ ritem_control *engine::create_control_imp(std::string control_type,va_list vl)
 	con->add_bump_deal(0,(bump_result)b.get<unsigned>("bump"),2);
 	checker->add_control(con);
 	return con;
+}
+
+
+move_ritem *engine::create_mritem_imp(std::string ritem_type,bumpchecker::pos point,bool flag){
+	if(ritem_type.size()==0){
+		return 0;
+	}
+	ptree &item_t=p_tree.get_child("item."+ritem_type);
+	move_ritem *it=new move_ritem(point,
+	                  item_t.get<unsigned>("size.width"),
+	                  item_t.get<unsigned>("size.height"),
+	                  flag);
+	ptree &show=item_t.get_child("show");
+	it->bind_show(new move_ritem_show(&map[show.get<int>("pid")],show.get<int>("x"),show.get<int>("y"),it));
+	return it;
 }
 
 ritem_control *engine::create_control(std::string control_type,...)
@@ -227,6 +286,7 @@ void engine::remove_imp(ritem *a)
 	}
 	checker->remove_static(a);
 	ritems.erase(a);
+	delete a;
 }
 void engine::remove_imp(ritem_control *a)
 {
@@ -235,6 +295,7 @@ void engine::remove_imp(ritem_control *a)
 		return ;
 	}
 	checker->remove_control(a);
+	delete a;
 }
 
 void engine::remove(ritem *a)
@@ -246,10 +307,31 @@ void engine::remove(ritem_control *a)
 	self->remove_imp(a);
 }
 
+move_ritem *engine::create_mritem(std::string ritem_type,bumpchecker::pos point,bool flag){
+	printf("qwe\n");
+	return self->create_mritem_imp(ritem_type,point,flag);
+}
+
+
 void engine::free()
 {
 	delete self;
 	self=0;
+}
+
+void engine::add_imp(ritem_control *a)
+{
+	checker->add_control(a);
+}
+
+void engine::add(ritem_control *a)
+{
+	self->add_imp(a);
+}
+
+std::string engine::rand_get_name()
+{
+	return self->rand_get_name_imp();
 }
 engine *engine::self=0;
 bool engine::key[256];

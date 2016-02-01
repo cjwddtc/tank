@@ -5,6 +5,7 @@
 #include <iostream>
 #include <chrono>
 #include <map>
+#include <array>
 
 namespace core
 {
@@ -38,11 +39,9 @@ public:
 
 enum bump_result {
     stop=0x1,
-    pass=0x2,
-    cover=0x4,
-    src_des=0x8,
-    des_des=0x10,
-    des_dec=0x20,
+    cover=0x2,
+    src_des=0x4,
+    des_des=0x8,
 };
 
 class ritem_control:public bumpchecker::square_control
@@ -57,18 +56,21 @@ protected:
 public:
 	void add_bump_deal(int type,bump_result res,unsigned is_static);
 	virtual unsigned get_level() const ;
-	ritem_control(move_ritem *it,unsigned speed,int type);
+	ritem_control()=default;
+	ritem_control *init_r_c(move_ritem *it,unsigned speed,int type);
 	move_ritem *get_target();
 	virtual unsigned bump(bumpchecker::item *);
 	virtual unsigned bump(bumpchecker::control *);
 	virtual ~ritem_control();
+	virtual void destroy();
 };
 
 class direct_control:public ritem_control
 {
 	unsigned drt;
 public:
-	direct_control(move_ritem *item,unsigned speed,int type,unsigned drt);
+	direct_control()=default;
+	direct_control *init_drt(unsigned drt);
 	virtual std::vector<boost::any> run();
 };
 
@@ -77,22 +79,32 @@ class fire_control:public ritem_control
 	std::vector<std::string> firename;
 	std::chrono::time_point<std::chrono::system_clock> firetime;
 public:
-	fire_control(move_ritem *it,unsigned speed,int type,std::vector<std::string> filename);
+	fire_control()=default;
+	fire_control *init_fire(std::vector<std::string> &&firename);
 	void fire();
 };
 
 class key_control:public fire_control
 {
-	int key_codes[5];
+	std::array<int,5> key_codes;
 public:
-	key_control(move_ritem *it,unsigned speed,int type,std::vector<std::string> firename,int codes[5]);
+	key_control()=default;
+	key_control *init_key(std::array<int,5> &&codes);
 	std::vector<boost::any> run();
 };
-/*
+
 class auto_control:public fire_control
 {
-	
-};*/
+	std::array<bumpchecker::pos,3> born;
+	std::vector<unsigned> ok_drt;
+	unsigned current_drt;
+public:
+	auto_control()=default;
+	auto_control *init_auto(std::array<bumpchecker::pos,3> &&born);
+	virtual std::vector<boost::any> run();
+	virtual void bump_drt(boost::any drt);
+	virtual void destroy();
+};
 
 }
 #endif
