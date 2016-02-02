@@ -67,7 +67,9 @@ unsigned ritem_control::bump(item *a)
 	if(a==0) {
 		n=null_result;
 	} else {
+        printf("1:%p:%s\n",a,typeid(*a).name());
 		ritem *b=dynamic_cast<ritem*>(a);
+        printf("2\n");
 		n=static_map[b->type];
 		if(n&des_des)
 			engine::remove(b);
@@ -80,19 +82,17 @@ unsigned ritem_control::bump(item *a)
 unsigned ritem_control::bump(control *a)
 {
 	ritem_control *c=dynamic_cast<ritem_control *>(a);
+    if(c->type>type){
+        return c->bump(this);
+    }
 	unsigned n=move_map[c->type];
 	if(n&des_des){
-	printf("4\n");
-	std::cout << typeid(*c).name() <<std::endl;
 		c->destroy();
 		
-	printf("6\n");
 	}
 	if(n&src_des){
-	printf("7\n");
 		destroy();
 		
-	printf("5\n");
 	}
 	return n;
 }
@@ -211,9 +211,7 @@ void auto_control::destroy(){
 	if(it){
 		if(it->y>>1==0){
 			delete it;
-			printf("4\n");
 			it=engine::create_mritem(engine::rand_get_name(),born[rand()%3]);
-			printf("%p",it);
 			if(it==0) ritem_control::destroy();
 		}else it->y-=2;
 	}else{

@@ -20,7 +20,7 @@ public:
 	//the function to get the range
 	virtual std::vector<pos> get_range()=0;
 	virtual void re_show()=0;
-	virtual ~item()=default;
+	virtual ~item();
 };
 
 class move_item:virtual public item

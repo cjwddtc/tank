@@ -146,7 +146,6 @@ std::string engine::rand_get_name_imp(){
 	swap(enemy_names[rand()%enemy_names.size()],enemy_names.back());
 	std::string p=enemy_names.back();
 	enemy_names.pop_back();
-	printf("test\n");
 	return p;
 }
 
@@ -308,7 +307,6 @@ void engine::remove(ritem_control *a)
 }
 
 move_ritem *engine::create_mritem(std::string ritem_type,bumpchecker::pos point,bool flag){
-	printf("qwe\n");
 	return self->create_mritem_imp(ritem_type,point,flag);
 }
 

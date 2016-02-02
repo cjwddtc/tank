@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <functional>
 #include <omp.h>
+#include <iostream>
 #include <mutex>
 namespace bumpchecker
 {
@@ -20,14 +21,28 @@ class cache
 {
 	cache_map c_m_;
 	public:
-	template <class T>
-	inline unsigned get(control *a,T *b,any drt){
+	inline unsigned get(control *a,item *b,any drt){
 		const cpair &p=make_pair(a,(void *)b);
 		auto it=c_m_.find(p);
 		if(it!=c_m_.end()){
 			return it->second;
 		}else{
-			printf("12%p\n",a);
+			unsigned n=a->bump(b);
+			a->bump_drt(drt);
+			c_m_.insert(make_pair(p,n));
+			return n;
+		}
+	}
+    
+	inline unsigned get(control *a,control *b,any drt){
+        if(a->get_level()<b->get_level()){
+            std::swap(a,b);
+        }
+		const cpair &p=make_pair(a,(void *)b);
+		auto it=c_m_.find(p);
+		if(it!=c_m_.end()){
+			return it->second;
+		}else{
 			unsigned n=a->bump(b);
 			a->bump_drt(drt);
 			c_m_.insert(make_pair(p,n));
@@ -51,6 +66,7 @@ void bumpcheck::run()
 	map.clear();
 	for(control *control_:controls) {
 		for(auto &b:control_->get_target()->get_range()) {
+            if(b.x>=x || b.y>=y) continue;
 			if(map[b.x][b.y]) cache_.set_pass(control_,map[b.x][b.y]);
 			map[b.x][b.y]=control_;
 		}
@@ -73,7 +89,7 @@ void bumpcheck::run()
 						map[b.x][b.y]=control_;
 					} else if(map[b.x][b.y]!=control_) {
 						unsigned c=cache_.get(control_,map[b.x][b.y],a);
-						if(c|bump_type::cover) {
+						if(c&bump_type::cover) {
 							map[b.x][b.y]=control_;
 						}
 						res|=c;
