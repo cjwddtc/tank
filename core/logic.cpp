@@ -67,9 +67,7 @@ unsigned ritem_control::bump(item *a)
 	if(a==0) {
 		n=null_result;
 	} else {
-        printf("1:%p:%s\n",a,typeid(*a).name());
 		ritem *b=dynamic_cast<ritem*>(a);
-        printf("2\n");
 		n=static_map[b->type];
 		if(n&des_des)
 			engine::remove(b);

@@ -9,5 +9,5 @@ pos::pos(unsigned x_,unsigned y_):x(x_),y(y_) {}
 }
 bumpchecker::item::~item()
 {
-    printf("delete:%p\n",this);
+    //printf("delete:%p\n",this);
 }
