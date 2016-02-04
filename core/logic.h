@@ -33,6 +33,7 @@ public:
 	unsigned x;//the x offset of x in the bmp
 	unsigned y;//the y offset of y in the bmp
 	move_ritem(bumpchecker::pos p,unsigned lenth,unsigned width,bool is_mid=false);
+	void init_x_y(unsigned x,unsigned y);
 	virtual void move(boost::any);
 };
 

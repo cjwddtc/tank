@@ -33,6 +33,12 @@ ritem::ritem(pos p,unsigned lenth,unsigned width,int type_,bool is_mid):square(p
 
 move_ritem::move_ritem(pos p,unsigned lenth,unsigned width,bool is_mid):square(p,lenth,width,is_mid),x(0),y(0) {}
 
+void move_ritem::init_x_y(unsigned x,unsigned y)
+{
+	this->x=x;
+	this->y=y;
+}
+
 void move_ritem::move(any cmd)
 {
 	move_square::move(cmd);
@@ -207,11 +213,12 @@ void auto_control::bump_drt(boost::any drti)
 }
 void auto_control::destroy(){
 	if(it){
-		if(it->y>>1==0){
+		if(it->x>>1==0){
 			delete it;
 			it=engine::create_mritem(engine::rand_get_name(),born[rand()%3]);
 			if(it==0) ritem_control::destroy();
-		}else it->y-=2;
+		}else 
+			it->x-=2;
 	}else{
 		it=engine::create_mritem(engine::rand_get_name(),born[rand()%3]);
 		if(it==0) ritem_control::destroy();

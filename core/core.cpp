@@ -121,14 +121,14 @@ void engine::load_map_imp(unsigned level)
 		                    tr.get<unsigned>("x"),
 		                    tr.get<unsigned>("y"),
 		                    i);
-		try {
+		if(tr.find("twinkle")!=tr.not_found()){
 			ptree &ttr=tr.get_child("twinkle");
 			sh=new twinkl_show(sh,
 			                   new ritem_show(&map[ttr.get<unsigned>("pid")],
 			                                  ttr.get<unsigned>("x"),
 			                                  ttr.get<unsigned>("y"),i),
 			                   ttr.get<double>("freq"));
-		} catch(...) {}
+		} 
 		i->bind_show(sh);
 		checker->add_static(i);
 	}
@@ -231,18 +231,14 @@ ritem_control *engine::create_control_imp(std::string control_type,va_list vl)
 		move_ritem *it=create_mritem_imp(b.get<string>("item"),po,flag);
 		con->init_r_c(it,b.get<unsigned>("speed"),b.get<unsigned>("id"));
 	}
-	try {
-		for(auto c:b.get_child("bump.static")) {
-			con->add_bump_deal(lexical_cast<int>(c.first),
-			                   (bump_result)lexical_cast<unsigned>(c.second.get<path>("").string()),1);
-		}
-	} catch(...) {}
-	try {
-		for(auto c:b.get_child("bump.move")) {
-			con->add_bump_deal(lexical_cast<int>(c.first),
-			                   (bump_result)lexical_cast<unsigned>(c.second.get<path>("").string()),0);
-		}
-	} catch(...) {}
+	for(auto c:b.get_child("bump.static")) {
+		con->add_bump_deal(lexical_cast<int>(c.first),
+						   (bump_result)lexical_cast<unsigned>(c.second.get<path>("").string()),1);
+	}
+	for(auto c:b.get_child("bump.move")) {
+		con->add_bump_deal(lexical_cast<int>(c.first),
+						   (bump_result)lexical_cast<unsigned>(c.second.get<path>("").string()),0);
+	}
 	con->add_bump_deal(0,(bump_result)b.get<unsigned>("bump"),2);
 	checker->add_control(con);
 	return con;
@@ -258,6 +254,7 @@ move_ritem *engine::create_mritem_imp(std::string ritem_type,bumpchecker::pos po
 	                  item_t.get<unsigned>("size.width"),
 	                  item_t.get<unsigned>("size.height"),
 	                  flag);
+	it->init_x_y(item_t.get("x",0),item_t.get("y",0));
 	ptree &show=item_t.get_child("show");
 	it->bind_show(new move_ritem_show(&map[show.get<int>("pid")],show.get<int>("x"),show.get<int>("y"),it));
 	return it;
