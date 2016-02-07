@@ -4,11 +4,11 @@
 #include <core/core.h>
 #include <thread>
 #include "core.h"
+namespace core
+{
 using namespace std::chrono_literals;
 using namespace std::chrono;
 using namespace std::this_thread;
-namespace core
-{
 using namespace bumpchecker;
 using namespace graphic;
 using namespace std;
@@ -46,6 +46,7 @@ void move_ritem::move(any cmd)
 
 ritem_control *ritem_control::init_r_c(move_ritem *item,unsigned speed_,int type_)
 {
+	is_delete=false;
 	it=item;
 	speed=speed_;
 	type=type_;
@@ -54,7 +55,7 @@ ritem_control *ritem_control::init_r_c(move_ritem *item,unsigned speed_,int type
 
 void ritem_control::add_bump_deal(int type,bump_result res,unsigned is_static)
 {
-	if(is_static==1) {
+ 	if(is_static==1) {
 		static_map[type]=res;
 	} else if(is_static==0) {
 		move_map[type]=res;
@@ -62,6 +63,7 @@ void ritem_control::add_bump_deal(int type,bump_result res,unsigned is_static)
 		null_result=res;
 	}
 }
+
 move_ritem *ritem_control::get_target()
 {
 	return it;
@@ -78,8 +80,9 @@ unsigned ritem_control::bump(item *a)
 		if(n&des_des)
 			engine::remove(b);
 	}
-	if(n&src_des)
+	if(n&src_des){
 		engine::remove(this);
+	}
 	return n;
 }
 
@@ -91,12 +94,10 @@ unsigned ritem_control::bump(control *a)
     }
 	unsigned n=move_map[c->type];
 	if(n&des_des){
-		c->destroy();
-		
+		engine::remove(c);
 	}
 	if(n&src_des){
-		destroy();
-		
+		engine::remove(this);
 	}
 	return n;
 }
@@ -106,15 +107,42 @@ unsigned ritem_control::get_level() const
 	return type;
 }
 
-void ritem_control::destroy()
+bool ritem_control::destroy()
 {
-	engine::remove(this);
-	//delete this;
+	return true;
 }
 
 ritem_control::~ritem_control()
 {
 	delete it;
+}
+
+
+std::vector<boost::any> static_control::run(){
+	//std::cout << this << ":" << speed << std::endl;
+	if(!speed--){
+		engine::remove(this);
+	}
+	return std::vector<boost::any>();
+}
+
+
+explode_control *explode_control::init_explode(std::string explod_name_){
+	explod_name=explod_name_;
+	return this;
+}
+
+bool explode_control::destroy(){
+	bumpchecker::pos p=it->point;
+	p.x+=it->width/2;
+	p.y+=it->height/2;
+	if(it)
+		engine::create_control(explod_name,p);
+	return true;
+}
+
+explode_control::~explode_control(){
+	explode_control::destroy();
 }
 
 direct_control *direct_control::init_drt(unsigned drt_)
@@ -132,22 +160,22 @@ std::vector<boost::any> direct_control::run()
 }
 
 
-fire_control *fire_control::init_fire(std::vector<std::string> &&strs)
+fire_control *fire_control::init_fire(std::vector<std::string> strs)
 {
 	firename=strs;
-	return  this;
+	return this;
 }
 
 void fire_control::fire()
 {
 	if(system_clock::now()<firetime) return ;
-	firetime = system_clock::now()+200ms;
+	firetime = system_clock::now()+500ms;
 	pos point((it->y&1?(it->y&2?0:it->width):it->width/2)+it->point.x,
 		          (it->y&1?it->height/2:(it->y&2?it->height:0))+it->point.y);
 	engine::create_control(firename[it->x>>1],point,it->y);
 }
 
-key_control *key_control::init_key(std::array<int,5> &&codes)
+key_control *key_control::init_key(std::array<int,5> codes)
 {
 	key_codes=codes;
 	return this;
@@ -169,7 +197,7 @@ std::vector<boost::any> key_control::run()
 	return a;
 }
 
-auto_control *auto_control::init_auto(std::array<bumpchecker::pos,3> &&born_)
+auto_control *auto_control::init_auto(std::array<bumpchecker::pos,3> born_)
 {
 	born=born_;
 	return this;
@@ -199,7 +227,7 @@ std::vector<boost::any> auto_control::run()
 	if(ok_drt.size()==0){
 		current_drt=rand()%4;
 	}else if(ok_drt.size()!=4){
-		current_drt =ok_drt[rand()%ok_drt.size()];
+		current_drt =rand()%4;//ok_drt[rand()%ok_drt.size()];
 	}
 	a.resize(speed,current_drt);
 	it->y=current_drt;
@@ -211,17 +239,19 @@ void auto_control::bump_drt(boost::any drti)
 	unsigned drt=boost::any_cast<unsigned>(drti);
 	ok_drt.erase(remove_if(ok_drt.begin(),ok_drt.end(),bind1st(std::equal_to<unsigned>(),drt)),ok_drt.end());
 }
-void auto_control::destroy(){
+bool auto_control::destroy(){
 	if(it){
 		if(it->x>>1==0){
+			explode_control::destroy();
 			delete it;
 			it=engine::create_mritem(engine::rand_get_name(),born[rand()%3]);
-			if(it==0) ritem_control::destroy();
+			if(it==0) return ritem_control::destroy();
 		}else 
 			it->x-=2;
 	}else{
 		it=engine::create_mritem(engine::rand_get_name(),born[rand()%3]);
-		if(it==0) ritem_control::destroy();
+		if(it==0) return ritem_control::destroy();
 	}
+	return false;
 }
 }

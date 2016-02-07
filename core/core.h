@@ -26,6 +26,7 @@ class engine
 	engine(boost::filesystem::path inifile);
 	ritem_control *create_control_imp(std::string control_type,va_list b);
 	move_ritem *create_mritem_imp(std::string ritem_type,bumpchecker::pos point,bool flag=false);
+	void add_to_do_imp(std::function<void()> to_do_fun);
 	void load_map_imp(unsigned level);
 	void run_imp();
 	~engine();
@@ -44,7 +45,7 @@ public:
 	static void free();
 	static void remove(ritem *);
 	static void remove(ritem_control *);
-	static void add(ritem_control *);
+	static void add(ritem_control *a);
 	static std::string rand_get_name();
 };
 }

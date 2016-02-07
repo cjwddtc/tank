@@ -34,6 +34,16 @@
 		<height>28</height>
 		<width>28</width>
 	</6>
+	<7>
+		graphics/explode1.bmp
+		<height>28</height>
+		<width>28</width>
+	</7>
+	<8>
+		graphics/explode2.bmp
+		<height>64</height>
+		<width>64</width>
+	</8>
 </picture>
 <map>
 	<1>
@@ -165,9 +175,32 @@
 		</show>
 		<x>4</x>
 	</hevay>
+	<explode1>
+		<size>
+			<width>28</width>
+			<height>28</height>
+		</size>
+		<show>
+			<x>0</x>
+			<y>0</y>
+			<pid>7</pid>
+		</show>
+	</explode1>
+	<explode2>
+		<size>
+			<width>64</width>
+			<height>64</height>
+		</size>
+		<show>
+			<x>0</x>
+			<y>0</y>
+			<pid>8</pid>
+		</show>
+	</explode1>
 </item>
 <control>
 	<player1_control>
+		<explode>explode2_control</explode>
 		<bump>
 			1
 			<static>
@@ -200,6 +233,7 @@
 		<maxlevel>4</maxlevel>
 	</player1_control>
 	<bullet_control>
+		<explode>explode1_control</explode>
 		<bump>
 			5
 			<static>
@@ -216,6 +250,7 @@
 		<item>bullet</item>
 	</bullet_control>
 	<ebullet_control>
+		<explode>explode1_control</explode>
 		<bump>
 			5
 			<static>
@@ -233,6 +268,8 @@
 		<item>bullet</item>
 	</ebullet_control>
 	<auto_control>
+		<type>auto_control</type>
+		<explode>explode2_control</explode>
 		<id>2</id>
 		<born>
 			<1>
@@ -268,6 +305,30 @@
 		<speed>4</speed>
 		<item>noraml</item>
 	</auto_control>
+	<explode1_control>
+		<type>static_control</type>
+		<id>2048</id>
+		<bump>
+			<static>
+			</static>
+			<move>
+			</move>
+		</bump>
+		<item>explode1</item>
+		<speed>5</speed>
+	</explode1_control>
+	<explode2_control>
+		<type>static_control</type>
+		<id>2049</id>
+		<bump>
+			<static>
+			</static>
+			<move>
+			</move>
+		</bump>
+		<item>explode2</item>
+		<speed>4</speed>
+	</explode2_control>
 </control>
 <load>
 	<player1_control/>

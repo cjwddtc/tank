@@ -9,6 +9,7 @@
 #include <graphic/Showmanage.h>
 #include <graphic/Show.h>
 #include "core.h"
+#define NDEBUG
 
 using boost::filesystem::path;
 using boost::lexical_cast;
@@ -59,7 +60,6 @@ void engine::load_map_imp(unsigned level)
 		else if(a==' ') return true;
 		else return false;}),rpath.end());
 	ifstream f(path(rpath).string());
-	std::cout << rpath << std::endl;
 	istreambuf_iterator<char> start(f),end;
 	unsigned hsize=size>>1;
 	ritems.clear();
@@ -174,17 +174,25 @@ void engine::run_imp()
 
 void engine::run()
 {
+#ifndef NDEBUG
+	std::cout << "start:" << std::endl;
+#endif
 	self->run_imp();
+#ifndef NDEBUG
+	std::cout << "end" << std::endl;
+#endif
 }
 
 ritem_control *engine::create_control_imp(std::string control_type,va_list vl)
 {
 	ptree &b=p_tree.get_child("control."+control_type);
 	ritem_control *con;
+	move_ritem *it;
 	pos po;
 	bool flag;
 	std::string str=b.get("type",control_type);
 	if(str=="auto_control"){
+		flag=false;
 		ptree &born=b.get_child("born");
 		std::array<bumpchecker::pos,3> ar;
 		ar[0].x=born.get<unsigned>("1.x")*size;
@@ -199,15 +207,16 @@ ritem_control *engine::create_control_imp(std::string control_type,va_list vl)
 		for(unsigned i=0; i<n; i++) {
 			fires.push_back(fire.get<string>(lexical_cast<string>(i)));
 		}
-		con=(new auto_control())->init_auto(std::move(ar))->init_fire(std::move(fires))->
-		init_r_c(0,b.get<unsigned>("speed"),b.get<unsigned>("id"));
+		std::cout << control_type << std::endl;
+		con=(new auto_control())->init_auto(ar)->init_fire(fires)->init_explode(b.get<string>("explode"));
 		con->destroy();
+		it=con->get_target();
 	}else{
 		if(str=="direct_control") {
 			po=pos(va_arg(vl,pos));
 			flag=true;
 			unsigned drt=va_arg(vl,unsigned);
-			con=(new direct_control())->init_drt(drt);;
+			con=(new direct_control())->init_drt(drt)->init_explode(b.get<string>("explode"));
 		} else if(str=="key_control") {
 			flag=false;
 			po=pos(b.get<double>("pos.x")*size,b.get<double>("pos.y")*size);
@@ -224,13 +233,19 @@ ritem_control *engine::create_control_imp(std::string control_type,va_list vl)
 			for(unsigned i=0; i<n; i++) {
 				fires.push_back(fire.get<string>(lexical_cast<string>(i)));
 			}
-			con=(new key_control())->init_key(std::move(a))->init_fire(std::move(fires));
-		}else {
+			con=(new key_control())->init_key(a)->
+					init_fire(fires)->init_explode(b.get<string>("explode"));
+			(con->static_map)[0]=stop;
+		}else if(str=="static_control"){
+			po=pos(va_arg(vl,pos));
+			flag=true;
+			con=(new static_control());
+		}else{
 			assert(0);
 		}
-		move_ritem *it=create_mritem_imp(b.get<string>("item"),po,flag);
-		con->init_r_c(it,b.get<unsigned>("speed"),b.get<unsigned>("id"));
+		it=create_mritem_imp(b.get<string>("item"),po,flag);
 	}
+	con->init_r_c(it,b.get<unsigned>("speed"),b.get<unsigned>("id"));
 	for(auto c:b.get_child("bump.static")) {
 		con->add_bump_deal(lexical_cast<int>(c.first),
 						   (bump_result)lexical_cast<unsigned>(c.second.get<path>("").string()),1);
@@ -239,7 +254,7 @@ ritem_control *engine::create_control_imp(std::string control_type,va_list vl)
 		con->add_bump_deal(lexical_cast<int>(c.first),
 						   (bump_result)lexical_cast<unsigned>(c.second.get<path>("").string()),0);
 	}
-	con->add_bump_deal(0,(bump_result)b.get<unsigned>("bump"),2);
+	con->add_bump_deal(0,(bump_result)b.get("bump",1),2);
 	checker->add_control(con);
 	return con;
 }
@@ -274,6 +289,7 @@ engine::~engine()
 	}
 }
 
+
 void engine::remove_imp(ritem *a)
 {
 	if(lock) {
@@ -290,8 +306,10 @@ void engine::remove_imp(ritem_control *a)
 		to_delete_control.insert(a);
 		return ;
 	}
-	checker->remove_control(a);
-	delete a;
+	if(a->destroy()){
+		checker->remove_control(a);
+		delete a;
+	}
 }
 
 void engine::remove(ritem *a)

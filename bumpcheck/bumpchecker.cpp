@@ -4,6 +4,7 @@
 #include <functional>
 #include <omp.h>
 #include <iostream>
+#define NDEBUG
 #include <mutex>
 namespace bumpchecker
 {
@@ -14,46 +15,66 @@ using boost::any;
 using std::pair;
 using std::make_pair;
 
-typedef pair<control *,void *> cpair;
-typedef map<cpair,unsigned> cache_map;
+typedef pair<control *,item *> item_pair;
+typedef pair<control *,control *> control_pair;
+typedef pair<unsigned,unsigned> result;
+typedef map<item_pair,unsigned> item_cache_map;
+typedef map<control_pair,result> control_cache_map;
 
 class cache
 {
-	cache_map c_m_;
+	item_cache_map i_c_m;
+	control_cache_map c_c_m;
 	public:
+	inline void clear(){
+		i_c_m.clear();
+		c_c_m.clear();
+	}
 	inline unsigned get(control *a,item *b,any drt){
-		const cpair &p=make_pair(a,(void *)b);
-		auto it=c_m_.find(p);
-		if(it!=c_m_.end()){
+		const item_pair &p=make_pair(a,b);
+		auto it=i_c_m.find(p);
+		if(it!=i_c_m.end()){
 			return it->second;
 		}else{
 			unsigned n=a->bump(b);
-			a->bump_drt(drt);
-			c_m_.insert(make_pair(p,n));
+			if(n&stop)
+				a->bump_drt(drt);
+			i_c_m.insert(make_pair(p,n));
 			return n;
 		}
 	}
     
 	inline unsigned get(control *a,control *b,any drt){
-        if(a->get_level()<b->get_level()){
-            std::swap(a,b);
-        }
-		const cpair &p=make_pair(a,(void *)b);
-		auto it=c_m_.find(p);
-		if(it!=c_m_.end()){
-			return it->second;
+		int n=a->get_level()-b->get_level();
+		unsigned flag=0x1;
+		control_pair p;
+        if(n<0 || (n==0 && a<b)){
+			p=make_pair(b,a);
+			flag=0x2;
+        }else{
+			p=make_pair(a,b);
+		}
+		auto it=c_c_m.find(p);
+		if(it!=c_c_m.end()){
+			if(!(it->second.second&flag)){
+				if(it->second.first&stop)
+					a->bump_drt(drt);
+				it->second.second|=flag;
+			}
+			return it->second.first;
 		}else{
 			unsigned n=a->bump(b);
-			a->bump_drt(drt);
-			c_m_.insert(make_pair(p,n));
+			if(n&stop)
+				a->bump_drt(drt);
+			c_c_m.insert(make_pair(p,make_pair(n,flag)));
 			return n;
 		}
 	}
 	
-	inline void set_pass(control *a,void *b){
-		const cpair &p=make_pair(a,b);
-		if(c_m_.find(p)==c_m_.end()){
-			c_m_.insert(make_pair(p,pass));
+	inline void set_pass(control *a,control *b){
+		const control_pair &p=make_pair(a,b);
+		if(c_c_m.find(p)==c_c_m.end()){
+			c_c_m.insert(make_pair(p,make_pair(pass,(unsigned)0)));
 		}
 	}
 };
@@ -62,6 +83,9 @@ bumpcheck::bumpcheck(unsigned x_,unsigned y_):x(x_),y(y_),static_map(x,y),map(x,
 
 void bumpcheck::run()
 {
+#ifndef NDEBUG
+	std::cout << controls.size() << std::endl;
+#endif
 	cache cache_;
 	map.clear();
 	for(control *control_:controls) {
